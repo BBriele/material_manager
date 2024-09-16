@@ -1,0 +1,220 @@
+<div id="container_form_movimento"> <!-- PARTIAL TABELLA MOVIMENTO -->
+
+    <!-- pulsante per mostrare il form per l'inserimento di un nuovo movimento -->
+    <button onclick="showForm()" <% if (config_form_movimenti.newMoviButton === false) { %>
+        hidden
+    <% } %>>Nuovo movimento</button>
+
+    <form id="formMovimento" style="display: none">
+
+        <!-- Campo per il id -->
+        <input type="hidden" id="id" name="_id" ><br>
+
+        <!-- Campo per il codice -->
+        <label for="codice-mov">Codice:</label>
+        <input type="text" id="codice-mov" name="codic-mov" required><br>
+
+        <!-- Campo per la causale -->
+        <label for="causale-mov">Causale:</label>
+        <input list="opzioni-mov" id="causale-mov" name="causale-mov" value="scari" required><br>
+        <datalist id="opzioni-mov">
+            <option value="scari">
+            <option value="cari">
+            <option value="INV">
+            <option value="InUbi">
+            <option value="OutUbi">
+        </datalist>
+
+        <!-- Campo per la quantità -->
+        <label for="quantita-mov">Quantità:</label>
+        <input type="number" id="quantita-mov" name="quantita-mov" required><br>
+
+        <!-- Campo per la giacenza -->
+        <label for="giacenza-mov">Giacenza:</label>
+        <input type="number" id="giacenza_aspettata" name="giacenza_aspettata" required><br>
+
+        <!-- Campo per la data -->
+        <label for="data-mov">Data:</label>
+        <input type="datetime-local" id="data-mov" name="data-mov" required><br>
+
+        <!-- Campo per le note -->
+        <label for="note-mov">Note:</label>
+        <textarea id="note-mov" name="note-mov"></textarea><br>
+
+        <!-- Campo per le note -->
+        <label for="ubicazione-mov">Ubicazione:</label>
+        <input type="text" id="ubicazione-mov" name="ubicazione-mov"></textarea><br>
+
+        <!-- Pulsante per salvare il form -->
+        <button type="submit-movimento">Salva</button>
+
+        <!-- Pulsante per annullare il form -->
+        <button type="button" id="annulla-form-movimento">Annulla</button>
+    </form>
+
+    <script>
+        //const moment = require('moment'); 
+
+        const codice_movimento = '<%=codice_movimento_p%>';
+        const causale_default = "scari";
+
+        document.getElementById('quantita-mov').addEventListener("keyup", (event) => {showGiacenza()});
+        document.getElementById('data-mov').addEventListener("keyup", (event) => {showGiacenza()});
+
+        //------------------------------------------------------------------------------
+        //  FUNZIONI MOSTRA/NASCONDI FORM NUOVO MOVIMENTO
+        function showForm(cod="0", caus = "0") {
+
+            const config_form_movimenti = JSON.parse('<%- JSON.stringify(config_form_movimenti) %>');
+
+            document.getElementById('formMovimento').style.display = 'block';
+
+            // Mostra o nascondi il campo data e la sua label
+            const dataLabel = document.querySelector('label[for="data-mov"]');
+            const dataInput = document.querySelector('#data-mov');
+            if (config_form_movimenti.hideDataInput === true) {
+                dataLabel.style.display = 'none';
+                dataInput.style.display = 'none';
+            } else {
+                dataLabel.style.display = 'block';
+                dataInput.style.display = 'block';
+            }
+
+            
+            if (codice_movimento !== "0"){
+                document.getElementById('codice-mov').value = codice_movimento;
+                document.getElementById("quantita-mov").focus();
+            } else if(cod !== "0"){
+                document.getElementById('codice-mov').value = cod;
+                document.getElementById("quantita-mov").focus();
+            }
+
+            if(caus !== "0"){
+                document.getElementById('causale-mov').value = caus;
+            }
+            //console.log(moment().format("yyyy/MM/DDTHH:mm:ss"));
+            document.getElementById("data-mov").value = moment().format("yyyy-MM-DDTHH:mm");
+        }
+        //------------------------------------------------------------------------------
+
+
+        //------------------------------------------------------------------------------
+        // Annulla il form e resetta i campi
+        function annullaForm() {
+            const formMovimento = document.querySelector('#formMovimento');
+            formMovimento.reset();
+            formMovimento.style.display = 'none';
+        }
+        //------------------------------------------------------------------------------
+
+        // Aggiungi un listener per l'evento click sul pulsante di annullamento
+        document.querySelector('#annulla-form-movimento').addEventListener('click', annullaForm);
+
+        // Aggiungi un listener per l'evento submit del form
+        document.querySelector('#formMovimento').addEventListener('submit', (event) => {
+            const formMovimento = document.querySelector('#formMovimento');
+            event.preventDefault();
+            //console.log(formMovimento.querySelector('#id').value);
+            if (formMovimento.querySelector('#id').value.length < 1) {
+                addMovimento();
+                //console.log("post addMovi");
+            } else {
+                modMovimento();
+            }
+        });
+
+
+        //------------------------------------------------------------------------------
+        // Aggiungi un nuovo movimento
+        function addMovimento() {
+            //console.log("dentro addMovi");
+            const codice = document.getElementById('codice-mov').value;
+            const causale = document.getElementById('causale-mov').value;
+            const quantita = document.getElementById('quantita-mov').value;
+            const giacenza = document.getElementById('giacenza_aspettata').value;
+            const data = document.getElementById('data-mov').value;
+            const ubicazione = document.getElementById('ubicazione').value;
+            const note = document.getElementById('note-mov').value;
+
+            const dati = {
+                codice: codice,
+                causale: causale,
+                quantita: quantita,
+                giacenza_aspettata: giacenza,
+                data: data,
+                note: note,
+                ubicazione: ubicazione
+            };
+
+            //console.log("Dati addMovimento: ", dati);
+
+            fetch('/apiMovimenti/addMovimento', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(dati)
+            })
+                .then(() => {
+                    window.location.reload();
+                })
+                .catch((err) => {
+                    console.error(err);
+                    alert('Errore durante il salvataggio del movimento');
+                });
+        }
+        //------------------------------------------------------------------------------
+
+
+        //------------------------------------------------------------------------------
+        // Modifica un movimento esistente
+        function modMovimento() {
+            const formMovimento = document.querySelector('#formMovimento');
+            const formData = new FormData(formMovimento);
+
+            // Invia i dati del form per la modifica di un record esistente
+            axios.put(`/apiMovimenti/modMovimentoById/${formData.get('_id')}`, Object.fromEntries(formData))
+                .then((response) => {
+                    window.location.reload();
+                })
+                .catch((error) => {
+                    console.error(error);
+                    alert('Errore durante la modifica del movimento');
+                });
+        }
+        //------------------------------------------------------------------------------
+
+
+        //------------------------------------------------------------------------------
+        // FUNZIONE MOSTRA FORM MODIFICA MATERIALE
+        function showModMovimento(id){
+            axios.get("/apiMovimenti/getMovimentiById/" + id)
+            .then((response) => {
+                //console.log(response.data[0]._id);
+                const form = document.querySelector('#formMovimento');
+                form.style.display = 'block';
+                form.querySelector('#id').value = response.data[0]._id;
+                form.querySelector('#codice-mov').value = response.data[0].codice;
+                form.querySelector('#causale-mov').value = response.data[0].causale;
+                form.querySelector('#quantita-mov').value = response.data[0].quantita;
+                form.querySelector('#giacenza_aspettata').value = response.data[0].giacenza_aspettata;
+                //  -------------------------------------------------
+                //form.querySelector('#data').value = response.data[0].data.split('.')[0];
+                //      AGGIUNGO DUE ORE PER COMPENSARE FUSO ORARIO STANDARD ISO
+                var dataInput = form.querySelector('#data-mov');
+                var dataValue = response.data[0].data.split('.')[0];
+                var data = new Date(dataValue);
+                data.setHours(data.getHours() + 4);
+                dataInput.value = data.toISOString().split('.')[0];
+                //  -------------------------------------------------
+                form.querySelector('#note-mov').value = response.data[0].note || '';
+                form.querySelector('#ubicazione-mov').value = response.data[0].ubicazione || '';
+        })
+            .catch((error) => {
+                console.error(error);
+            });
+        }
+        //------------------------------------------------------------------------------
+
+    </script>
+</div>

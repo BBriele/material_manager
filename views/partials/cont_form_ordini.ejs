@@ -1,0 +1,165 @@
+<div id="container_form_ordine"> <!-- PARTIAL FORM ORDINI -->
+
+    <!-- pulsante per mostrare il form per l'inserimento di un nuovo ordine -->
+    <button id="<%= namespace %>_button_ordini" <% if (config_form_ordine.newOrdineButton === false) { %>
+        hidden
+    <% } %>>Nuovo ordine</button>
+
+    <form id="<%= namespace %>_formOrdine" style="display: none">
+
+        <!-- Campo per l'id -->
+        <input type="hidden" id="id" name="_id" ><br>
+
+        <!-- Campo per il riferimento all'ordine -->
+        <label for="rif_ordine">Riferimento ordine:</label>
+        <input type="text" id="rif_ordine" name="rif_ordine" required><br>
+
+        <!-- Campo per il codice -->
+        <label for="codice">Codice:</label>
+        <input type="text" id="codice" name="codice" required><br>
+
+        <!-- Campo per la quantità -->
+        <label for="quantita">Quantità:</label>
+        <input type="number" id="quantita" name="quantita" required><br>
+
+        <!-- Campo per la data -->
+        <label for="data">Data:</label>
+        <input type="datetime-local" id="data" name="data" required><br>
+
+        <!-- Campo per le note -->
+        <label for="note">Note:</label>
+        <textarea id="note" name="note"></textarea><br>
+
+        <!-- Pulsante per salvare il form -->
+        <button type="submit">Salva</button>
+
+        <!-- Pulsante per annullare il form -->
+        <button type="button" id="annulla-form">Annulla</button>
+    </form>
+    <script>
+        
+
+        (function(namespace) {
+            const codice_ordine = '<%=codice_ordine_p%>';
+
+            // Aggiungi un listener per l'evento click sul bottone ordini
+            document.querySelector('#<%= namespace %>_button_ordini').addEventListener('click', showForm);
+
+            //------------------------------------------------------------------------------
+            // FUNZIONI MOSTRA/NASCONDI FORM NUOVO ORDINE
+            function showForm(codice = "0") {
+                document.getElementById('<%= namespace %>_formOrdine').style.display = 'block';
+
+                if (codice_ordine !== "0") {
+                    document.getElementById('codice').value = codice_ordine;
+                } //else if (codice !== "0") {
+                //    document.getElementById('codice').value = codice;
+               // }
+
+                document.getElementById("data").value = moment().format("yyyy-MM-DDTHH:mm");
+            }
+            //------------------------------------------------------------------------------
+
+
+            //------------------------------------------------------------------------------
+            // Annulla il form e resetta i campi
+            function annullaForm() {
+                const formOrdine = document.querySelector('#<%= namespace %>_formOrdine');
+                formOrdine.reset();
+                formOrdine.style.display = 'none';
+            }
+            //------------------------------------------------------------------------------
+
+            // Aggiungi un listener per l'evento click sul pulsante di annullamento
+            document.querySelector('#annulla-form').addEventListener('click', annullaForm);
+            
+
+            // Aggiungi un listener per l'evento submit del form
+            document.querySelector('#<%= namespace %>_formOrdine').addEventListener('submit', (event) => {
+                const formOrdine = document.querySelector('#<%= namespace %>_formOrdine');
+                event.preventDefault();
+                if (formOrdine.querySelector('#id').value.length < 1) {
+                    addOrdine();
+                } else {
+                    modOrdine();
+                }
+            });
+
+
+            //------------------------------------------------------------------------------
+            // Aggiungi un nuovo ordine
+            function addOrdine() {
+                const rif_ordine = document.getElementById('rif_ordine').value;
+                const codice = document.getElementById('codice').value;
+                const quantita = document.getElementById('quantita').value;
+                const data = document.getElementById('data').value;
+                const note = document.getElementById('note').value;
+
+                const dati = {
+                    rif_ordine: rif_ordine,
+                    codice: codice,
+                    quantita: quantita,
+                    data: data,
+                    note: note
+                };
+
+                fetch('/apiOrdini/addOrdine', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(dati)
+                })
+                    .then(() => {
+                        window.location.reload();
+                    })
+                    .catch((err) => {
+                        console.error(err);
+                        alert('Errore durante il salvataggio dell\'ordine');
+                    });
+            }
+            //------------------------------------------------------------------------------
+
+
+            //------------------------------------------------------------------------------
+            // Modifica un ordine esistente
+            function modOrdine() {
+                const formOrdine = document.querySelector('#<%= namespace %>_formOrdine');
+                const formData = new FormData(formOrdine);
+
+                axios.put(`/apiOrdini/modOrdineById/${formData.get('_id')}`, Object.fromEntries(formData))
+                    .then((response) => {
+                        window.location.reload();
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                        alert('Errore durante la modifica dell\'ordine');
+                    });
+            }
+            //------------------------------------------------------------------------------
+
+
+            //------------------------------------------------------------------------------
+            // FUNZIONE MOSTRA FORM MODIFICA ORDINE
+            function showModOrdine(id){
+                axios.get("/apiOrdini/getOrdineById/" + id)
+                    .then((response) => {
+                        const form = document.querySelector('#<%= namespace %>_formOrdine');
+                        form.style.display = 'block';
+                        form.querySelector('#id').value = response.data[0]._id;
+                        form.querySelector('#rif_ordine').value = response.data[0].rif_ordine;
+                        form.querySelector('#codice').value = response.data[0].codice;
+                        form.querySelector('#quantita').value = response.data[0].quantita;
+                        form.querySelector('#data').value = response.data[0].data.split('.')[0];
+                        form.querySelector('#note').value = response.data[0].note || '';
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                    });
+            }
+            //------------------------------------------------------------------------------
+
+        })('<%= namespace %>');
+
+    </script>
+</div>

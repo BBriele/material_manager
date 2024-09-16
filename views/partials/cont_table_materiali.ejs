@@ -1,0 +1,265 @@
+<div id="container_view_materiale"> <!-- PARTIAL TABELLA MATERIALE -->
+    <!--
+        const MaterialeSchema = new Schema({
+            codice: { type: String, required: true },
+            descrizione: { type: String, required: true },
+            fornitore: { type: String },
+            giacenza_minima: { type: Number},
+            reparto: { type: String}
+        });      
+    }-->
+    <style>
+        
+    </style>
+    <!-- campo per inserire data prossimo ordine -->
+    <input type="hidden" id="dataProssimoOrdine" name="dataProssimoOrdine" onchange="updateDataProssimoOrdine(this.value)">
+
+    <div id="div_table_materiali">
+        <table id='<%= namespace %>_tabella_materiali' class="display compact hover cell-border"></table>
+        <input type="hidden" id='<%= namespace %>_info-table-state' />
+    </div>
+    <br>
+
+    <% var codici = Array.isArray(codici_materiali) ? codici_materiali : [codici_materiali]; %>
+    <!-- <% var dataProsOrd = new Date(dataProssimoOrdine);%> -->
+
+    <script async>
+        (async function(namespace) {
+            // Opzioni per la creazione della tabella
+            var options_materiali = JSON.parse('<%- JSON.stringify(options_materiali_s) %>');
+            //console.log(options_materiali);
+
+            // Definizione dei pulsanti per le azioni sulla tabella
+            var buttonColumns_materiali = JSON.parse('<%- JSON.stringify(buttonColumns_materiali_s) %>');
+
+            //console.log('<%= dataProssimoOrdine %>');
+            const dataProsOrd = new Date('<%= dataProssimoOrdine %>');
+            dataProsOrd.setHours(dataProsOrd.getHours() + 2);
+            console.log("dataProsOrd: ", dataProsOrd.toISOString());
+
+            // Opzioni per il ridimensionamento delle colonne
+            var colResizeOption = {
+                isEnabled: true,
+                hoverClass: 'dt-colresizable-hover',
+                hasBoundCheck: true,
+                minBoundClass: 'dt-colresizable-bound-min',
+                maxBoundClass: 'dt-colresizable-bound-max',
+                saveState: true,
+                isResizable: true
+            };
+
+            // Funzione principale eseguita al caricamento della pagina
+            const arrayCodici = await fetchCodici();
+            const arrayMateriali = await fetchMateriali();
+            
+            //console.log("arrayCodici: ", arrayCodici);
+            //const giacenze = (await axios.post('/apiMovimenti/getGiacenzaAspettataArray', { codici: arrayCodici })).data;
+            const giornirimanentiii = (await axios.post('/apiMateriali/getVitaStimataByCodici', { codici: arrayCodici})).data;
+            // varaibile globale per l'array di num pz necessari dato arrayCodici
+            const numPzNece = (await axios.post('/apiMateriali/getNumPzProssimoOrdineArray', { codici: arrayCodici, dataProssimoOrdine: dataProsOrd})).data;
+
+
+            //imposto valore campo input data prossimo ordine con valore dataProssimoOrdine al caricamento pagina
+            document.getElementById("dataProssimoOrdine").value = dataProsOrd.toISOString().slice(0,10);
+
+
+            //console.log("giacenze: ", giacenze);
+            //console.log("arrayMateriali: ");
+            //console.log(JSON.stringify(arrayMateriali));
+
+            var arrayTabella = arrayMateriali;
+            //var arrayTabella = await unisciArrayPerCodice(arrayMateriali, giacenze);
+            arrayTabella = await unisciArrayPerCodice(arrayTabella, giornirimanentiii);
+            arrayTabella = await unisciArrayPerCodice(arrayTabella, numPzNece);
+
+            console.log(arrayTabella);
+
+            //updateColumns(arrayTabella, options_materiali);
+
+            await createDataTableMateriali(arrayTabella, options_materiali, buttonColumns_materiali);
+
+            // Funzione per recuperare i codici dei materiali
+            async function fetchCodici() {
+                // Recupera i codici passati come variabile dal template index.ejs
+                const codici = Object.assign({}, '<%= codici %>');
+                //console.log(codici);
+
+                if (codici && codici.length > 0) {
+                    return codici;
+                } else {
+                    const response = await axios.get('/apiMateriali/getCodici');
+                    //console.log("quii");
+                    return response.data;
+                }
+            }
+
+            // Funzione per recuperare i materiali
+            async function fetchMateriali() {
+                // Utilizza i codici passati come variabile dal template index.ejs per filtrare i materiali
+                //const codici = Object.assign({}, '<%= codici %>');
+                const codici = '<%= codici %>';
+                //console.log(codici);
+
+                if (codici && codici.length > 0) {
+                    const response = await fetchMaterialiByCodici(codici);
+                    return response;
+                } else {
+                    const response = await axios.get('/apiMateriali/getMateriali');
+                    return response.data;
+                }
+            }
+
+            // Funzione per recuperare i materiali corrispondenti ai codici specificati
+            async function fetchMaterialiByCodici(codici) {
+                const url = '/apiMateriali/getMaterialiByCodici?codici=' + codici;
+                //console.log("url codici: " + url);
+                const response = await axios.get(url);
+                //console.log("responde getMaterialiByCodici: " + response.data);
+                return response.data;
+            }
+
+            // Funzione per creare la tabella dati
+            async function createDataTableMateriali(jsonData, options_materiali, buttonColumns_materiali) {              
+                var defaultoptions_materiali = {
+                    //paging: true,
+                    //searching: true,
+                    //ordering: true,
+                    colResize: colResizeOption, // Opzioni per il ridimensionamento delle colonne
+                    orderCellsTop: true,
+                    fixedHeader: true,
+                    initComplete: function() {
+                        var api = this.api();
+                        // For each column
+                        api.columns().eq(0).each(function(colIdx) {
+                            // Set the header cell to contain the input element
+                            var cell = $('.filters th').eq($(api.column(colIdx).header()).index());
+                            var title = $(cell).text();
+                            $(cell).html( '<input type="text" placeholder="'+title+'" />' );
+                            // On every keypress in this input
+                            $('input', $('.filters th').eq($(api.column(colIdx).header()).index()) )
+                                .off('keyup change')
+                                .on('keyup change', function (e) {
+                                    e.stopPropagation();
+                                    // Get the search value
+                                    $(this).attr('title', $(this).val());
+                                    var regexr = '({search})'; //$(this).parents('th').find('select').val();
+                                    var cursorPosition = this.selectionStart;
+                                    // Search the column for that value
+                                    api
+                                        .column(colIdx)
+                                        .search((this.value != "") ? regexr.replace('{search}', '((('+this.value+')))') : "", this.value != "", this.value == "")
+                                        .draw();
+                                    $(this).focus()[0].setSelectionRange(cursorPosition, cursorPosition);
+                                });
+                        });
+                    },
+                };
+
+                var mergedoptions_materiali = Object.assign({}, defaultoptions_materiali, options_materiali);
+                //console.log(mergedoptions_materiali);
+
+                if (Array.isArray(buttonColumns_materiali)) {
+                    buttonColumns_materiali.forEach(function(buttonColumn) {
+                        if (buttonColumn.type === "icon") {
+                            // Gestisci due pulsanti nella stessa cella
+                            mergedoptions_materiali.columns.push({ title: buttonColumn.title, data: null });
+                            mergedoptions_materiali.columnDefs.push({
+                                targets: buttonColumn.target,
+                                render: function(data, type, row, meta) {
+                                    var buttonsHTML = '';
+                                    for (var i = 0; i < buttonColumn.icon.length; i++) {
+                                        var icon = buttonColumn.icon[i];
+                                        var title = buttonColumn.title[i];
+                                        var functionName = buttonColumn.functionNames[i];
+                                        var className = buttonColumn.className[i];
+                                        var param = buttonColumn.param[i];
+                                        buttonsHTML += '<span class="material-icons '+ className +'" onclick="' + functionName + '(\'' + row[param] + '\')">' + icon + '</span>';
+                                    }
+                                    return buttonsHTML;
+                                }
+                            });
+                        } else if (buttonColumn.type === "function") {  
+                            // Gestisci due pulsanti nella stessa cella
+                            mergedoptions_materiali.columns.push({ title: buttonColumn.title, data: null });
+                            mergedoptions_materiali.columnDefs.push({
+                                targets: buttonColumn.target,
+                                render: function(data, type, row, meta) {
+                                    var buttonsHTML = '';
+                                    for (var i = 0; i < buttonColumn.functionNames.length; i++) {
+                                        var functionName = buttonColumn.functionNames[i];
+                                        var param = buttonColumn.param[i];
+                                        var className = buttonColumn.className[i];
+                                        buttonsHTML += '<span class="funtion_render '+ className +'" >' +  "Azz"/*eseguiFunzione(functionName, row[param]) */  + '</span>';
+                                    }
+                                    return buttonsHTML;
+                                }
+                            });
+                        } else {
+                            // Gestisci un singolo pulsante
+                            mergedoptions_materiali.columns.push({ title: buttonColumn.title, data: null });
+                            mergedoptions_materiali.columnDefs.push({
+                                targets: buttonColumn.target,
+                                render: function(data, type, row, meta) {
+                                    if (buttonColumn.type === "text") {
+                                        buttonHTML = buttonColumn.text;
+                                    } else {
+                                        return '<button class="" onclick="' + buttonColumn.functionName + '(\'' + row[buttonColumn.param] + '\')">' + buttonColumn.text + '</button>';
+                                    }
+                                }
+                            });
+                        }
+                    });
+                }
+
+                // Setup - add a text input to each footer cell
+                $("#" + namespace + "_tabella_materiali thead tr")
+                    .clone(true)
+                    .addClass('filters')
+                    .appendTo( "#" + namespace + "_tabella_materiali thead" );
+
+                var dataTable = $("#" + namespace + "_tabella_materiali").DataTable(mergedoptions_materiali);
+
+                dataTable.clear();
+                dataTable.rows.add(jsonData);
+                dataTable.draw();
+            }
+
+
+            
+
+            // Funzione per aggiornare le colonne della tabella
+            function updateColumns(data, options_materiali) {
+                var existingColumns = options_materiali.columns || [];
+                var existingColumnNames = existingColumns.map(function(column) {
+                    return column.data;
+                });
+
+                var newColumnNames = Object.keys(data[0]);
+
+                // Rimuovi le colonne inesistenti
+                var updatedColumns = existingColumns.filter(function(column) {
+                    return newColumnNames.includes(column.data);
+                });
+
+                // Aggiungi le nuove colonne
+                newColumnNames.forEach(function(columnName) {
+                    if (!existingColumnNames.includes(columnName)) {
+                        updatedColumns.push({
+                            title: columnName,
+                            data: columnName
+                        });
+                    }
+                });
+
+                options_materiali.columns = updatedColumns;
+            }
+
+            // funzione update dataProssimoOrdine
+            function updateDataProssimoOrdine(data){
+                console.log("data: ", data);
+                dataProsOrd = data;
+                
+            }
+        })('<%= namespace %>');
+    </script>
+</div>

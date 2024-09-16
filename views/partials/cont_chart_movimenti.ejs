@@ -1,0 +1,196 @@
+<div>
+
+    <style>
+        #chartContainer {
+            width: 85%;
+            height: 400px; /* Imposta l'altezza desiderata */
+        }
+    </style>
+
+    <div id="daterangContainer">
+        <label for="startDateInput">Data di inizio:</label>
+        <input id="startDateInput" type="date" min="" max="">
+        <label for="endDateInput">Data di fine:</label>
+        <input id="endDateInput" type="date" min="" max="">
+        <button onclick="updateChart()">Aggiorna</button>
+    </div>
+
+    <div id="chartContainer">
+        <canvas id="myChart"></canvas>
+    </div>
+
+    <div>
+        <ul class="media-list">
+            <li id="media_scari"></li>
+            <li id="media_cari"></li>
+            <li id="media_inv"></li>
+          </ul>  
+    </div>
+
+    <script>
+
+        var chartData = []; // Variabile globale per memorizzare i dati originali del grafico
+        var origin_chartData = [];
+
+        // Eseguire la richiesta Axios per ottenere i dati dal server
+        const codice = '<%= cod_mate_chart %>';
+
+        getMovimenti(codice);
+        async function getMovimenti(codice){
+            try {
+                const response = await axios.get('/apiMovimenti/getMovimentiByCod/' + codice);
+                chartData = response.data; // Memorizza i dati originali del grafico
+                //console.log("chartData:", chartData);
+                origin_chartData = chartData;
+                generateChart(chartData);
+                // Qui puoi continuare con il resto del tuo codice che dipende da chartData
+            } catch (error) {
+                console.error(error);
+            }
+        }
+       // console.log("origin_chartData:", origin_chartData);
+
+        var minDate = new Date(chartData[0]).toISOString();
+        var maxDate = new Date(chartData[0]).toISOString();
+
+        for (var i = 1; i < chartData.length; i++) {
+            var itemDate = new Date(chartData[i]).toISOString();
+
+            if (itemDate < minDate) {
+                minDate = itemDate;
+            }
+
+            if (itemDate > maxDate) {
+                maxDate = itemDate;
+            }
+        }
+
+        // Formattazione delle date nel formato "dd/mm/yyyy"
+        /*var options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+        var formatter = new Intl.DateTimeFormat('it-IT', options);
+        minDate = formatter.format(minDate);
+        maxDate = formatter.format(maxDate);
+
+        // Ottieni il riferimento all'elemento del campo
+        var starDateinput = document.getElementById('startDateInput');
+        var endDateinput = document.getElementById('endDateInput');
+
+        // Imposta gli attributi min e max del campo con il valore della variabile
+        starDateinput.min = minDate;
+        starDateinput.max = maxDate;
+        endDateinput.min = minDate;
+        endDateinput.max = maxDate;*/
+
+        
+
+        //var startDate = new Date(minDate).toISOString();
+       // var endDate = new Date(maxDate).toISOString();
+        
+        //getData(startDate, endDate, codice, "scari", "media", "media_scari");
+        
+
+        function generateChart(data) {
+            var chartContainer = document.getElementById('chartContainer');
+            var canvas = document.getElementById('myChart');
+
+            // Verifica se esiste già un canvas in uso
+            if (canvas) {
+                chartContainer.removeChild(canvas);
+            }
+
+            // Crea un nuovo canvas per il grafico
+            var newCanvas = document.createElement('canvas');
+            newCanvas.id = 'myChart';
+            chartContainer.appendChild(newCanvas);
+
+            var copiedData = data.slice(); // Copia superficiale dell'array data
+
+            var labels = copiedData.map(function (item) {
+                var itemDate = new Date(item.data);
+                var localDate = new Date(itemDate.getTime() - itemDate.getTimezoneOffset() * 60000);
+                return localDate.toISOString().slice(0, 16); // Converti la data locale in formato ISO con la precisione al minuto
+            });
+
+            var values = copiedData.map(function (item) {
+                return item.giacenza_aspettata;
+            });
+
+            var ctx = newCanvas.getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                labels: labels,
+                datasets: [
+                    {
+                    label: 'Giacenza Aspettata',
+                    data: values,
+                    fill: false,
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1,
+                    },
+                ],
+                },
+                options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'Tempo',
+                    },
+                    },
+                    y: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'Giacenza Aspettata',
+                    },
+                    },
+                },
+                },
+            });
+            }
+
+
+
+        function updateChart() {
+            var startDate = document.getElementById('startDateInput').value;
+            var endDate = document.getElementById('endDateInput').value;
+
+            // Convalida delle date
+            var startDateObj = startDate ? new Date(startDate).toISOString() : null;
+            var endDateObj = endDate ? new Date(endDate).toISOString() : null;
+
+            // Filtra i dati in base alle date di inizio e fine
+            var filteredData = chartData.filter(function(item) {
+                var itemDate = new Date(item.data).toISOString();
+                return (!startDateObj || itemDate >= startDateObj) && (!endDateObj || itemDate <= endDateObj);
+            });
+
+            generateChart(filteredData); // Genera il grafico con i dati filtrati
+        }
+
+
+        function getData(startDate, endDate, codice, causale, operazione, element) {
+            axios.get('/apiMovimenti/getMediaMovimentiByDate', {
+                params: {
+                    startDate: new Date(startDate).toISOString(),
+                    endDate: new Date(endDate).toISOString(),
+                    codice: codice,
+                    causale: causale,
+                    operazione: operazione
+                }
+                })
+                .then(function (response) {
+                    var values = response.data;
+                    
+                    document.getElementById(element).innerHTML = values;
+                })
+                .catch(function (error) {
+                console.error(error);
+                });
+        }
+    </script>
+</div>

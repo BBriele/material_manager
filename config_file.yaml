@@ -1,0 +1,1001 @@
+#------------------------------- MATERIALI -------------------------------------
+
+  #-------------------------------------------------------------------------------
+  # OPZIONI GLOBALI
+  options_data_prossimo_ordine: 2023/12/04
+
+  #-------------------------------------------------------------------------------
+  # OPZIONI TABELLA PAGINA MATERIALI
+  options_materiali_def:
+    paging: false
+    info: true
+    stateSave: true
+    searching: true
+    ordering: true
+    scrollY: 600
+    scrollX: false
+    scrollCollapse: true
+    processing: true
+    columns:
+      - title: Id
+        data: _id
+      - title: Codice
+        data: codice
+      - title: Descrizione
+        data: descrizione
+      - title: Fornitore
+        data: fornitore
+      - title: Tempo Consegna
+        data: tempoConsegna
+      - title: Reparto
+        data: reparto
+      - title: Giacenza
+        data: giacenza
+      - title: Giacenza Minima
+        data: giacenza_minima
+    columnDefs:
+      - targets:
+          - 6
+          - 7
+        className: dt-right
+      - targets:
+          - 8
+          - 9
+          - 10
+          - 11
+          - 12
+        className: dt-center
+      - orderable: false
+        targets:
+          - 8
+          - 9
+          - 10
+          - 11
+          - 12
+      - searchable: false
+        targets:
+          - 8
+          - 9
+          - 10
+          - 11
+          - 12
+      - targets: 0
+        visible: false
+        searchable: false
+      - width: 20%
+        targets: 1
+      - className: column_codice
+        targets: 1
+      - className: column_descrizione
+        targets: 2
+      - className: column_qt dt-right
+        targets:
+          - 6
+          - 7
+      - className: column_bt dt-center
+        targets:
+          - 8
+          - 9
+          - 10
+          - 11
+          - 12
+
+  # OPZIONI TABELLA PAGINA MOVIMENTI-MATERIALE
+  options_materiali_1_cod:
+    paging: false
+    lengthChange: false
+    info: false
+    searching: false
+    ordering: false
+    columns:
+      - title: Id
+        data: _id
+      - title: Codice
+        data: codice
+      - title: Descrizione
+        data: descrizione
+      - title: Fornitore
+        data: fornitore
+      - title: Reparto
+        data: reparto
+      - title: Giacenza
+        data: giacenza
+      - title: Giacenza Minima
+        data: giacenza_minima
+      - title: Pz a Pro Ordine
+        data: risultato
+      - title: Giorni Rimanenti
+        data: giorniRimanenti
+      - title: Data di esaurimento
+        data: dataEsaurimento
+    columnDefs:
+      - targets:
+          - 5
+          - 6
+        className: dt-right
+      - targets: 
+          - 0
+        visible: false
+        searchable: false
+      - className: column_codice
+        targets: 1
+      - className: column_descrizione
+        targets: 2
+      - className: column_qt dt-right
+        targets:
+          - 5
+          - 6
+          - 7
+          - 8
+          - 9
+
+  # OPZIONI TABELLA PAGINA MATERIALI-NECESSARI
+  options_materiali_necessari:
+    paging: false
+    lengthChange: false
+    info: false
+    searching: false
+    ordering: true
+    autoWidth: true
+    order:
+      - 5
+      - asc
+    columns:
+      - title: Id
+        data: _id
+      - title: Codice
+        data: codice
+      - title: Descrizione
+        data: descrizione
+      - title: Fornitore
+        data: fornitore
+      - title: Reparto
+        data: reparto
+      - title: Giacenza
+        data: giacenza
+      - title: Giacenza Minima
+        data: giacenza_minima
+    columnDefs:
+      - targets:
+          - 0
+          - 3
+          - 4
+        visible: false
+        searchable: false
+      - targets:
+          - 7
+          - 8
+          - 9
+        searchable: false
+        orderable: false
+      - className: column_codice
+        targets: 1
+      - className: column_descrizione
+        targets: 2
+      - className: column_qt dt-right
+        targets:
+          - 5
+          - 6
+      - className: column_bt dt-center
+        targets:
+          - 7
+          - 8
+          - 9
+
+  # OPZIONI TABELLA PAGINA MATERIALI-CASSETTIERA
+  options_materiali_cassettiera:
+    paging: false
+    lengthChange: false
+    info: false
+    searching: false
+    ordering: true
+    autoWidth: true
+    order:
+      - 2
+      - asc
+    columns:
+      - title: Id
+        data: _id
+      - title: Codice
+        data: codice
+      - title: Descrizione
+        data: descrizione
+      - title: Fornitore
+        data: fornitore
+      - title: Reparto
+        data: reparto
+      - title: Giacenza
+        data: giacenza
+      - title: Giacenza Minima
+        data: giacenza_minima
+    columnDefs:
+      - targets:
+          - 0
+          - 3
+          - 4
+        visible: false
+        searchable: false
+      - className: column_codice
+        targets: 1
+      - className: column_descrizione
+        targets: 2
+      - className: column_qt dt-right
+        targets:
+          - 5
+          - 6
+      - targets:
+          - 7
+          - 8
+          - 9
+        searchable: false
+        orderable: false
+        className: column_bt dt-center
+
+  options_materiali_cassettiera_dpi:
+    paging: false
+    lengthChange: false
+    info: false
+    searching: false
+    ordering: true
+    autoWidth: true
+    order:
+      - 2
+      - asc
+    columns:
+      - title: Id
+        data: _id
+      - title: Codice
+        data: codice
+      - title: Descrizione
+        data: descrizione
+      - title: Fornitore
+        data: fornitore
+      - title: Reparto
+        data: reparto
+      - title: Giacenza
+        data: giacenza
+      - title: Giacenza Minima
+        data: giacenza_minima
+    columnDefs:
+      - targets:
+          - 0
+          - 3
+          - 4
+        visible: false
+        searchable: false
+      - className: column_codice
+        targets: 1
+      - className: column_descrizione
+        targets: 2
+      - className: column_qt dt-right
+        targets:
+          - 5
+          - 6
+      - targets:
+          - 7
+          - 8
+          - 9
+        searchable: false
+        orderable: false
+        className: column_bt dt-center
+        
+         
+  
+  # OPZIONI TABELLA PAGINA MATERIALI
+  options_materiali_esaurimento:
+    paging: false
+    info: true
+    stateSave: true
+    searching: true
+    ordering: true
+    order:
+      - 8
+      - desc
+    scrollY: 600
+    scrollX: false
+    scrollCollapse: true
+    columns:
+      - title: Id
+        data: _id
+      - title: Codice
+        data: codice
+      - title: Descrizione
+        data: descrizione
+      - title: Fornitore
+        data: fornitore
+      - title: Reparto
+        data: reparto
+      - title: Giacenza
+        data: giacenza
+      - title: Tempo Consegna
+        data: tempoConsegna
+        class: cl_tempoConsegna
+      - title: Pz a Pro Ordine
+        data: risultato
+      - title: Giorni Rimanenti
+        data: giorniRimanenti
+      - title: Data di esaurimento
+        data: dataEsaurimento
+    columnDefs:
+      - targets:
+          - 5
+          - 6
+          - 7
+          - 8
+        className: dt-right
+
+      - targets:
+          - 10
+          - 11
+          - 12
+        searchable: false
+        orderable: false
+        className: column_bt dt-center
+
+      - targets: 0
+        visible: false
+        searchable: false
+
+      - width: 20%
+        targets: 1
+      - className: column_codice
+        targets: 1
+      - className: column_descrizione
+        targets: 2
+  #-------------------------------------------------------------------------------
+
+
+  #-------------------------------------------------------------------------------
+  # OPZIONI PULSANTI TABELLA PAGINA MATERIALI
+  buttonColumns_materiali_def:
+    - type: icon
+      icon:
+        - remove
+        - add
+      title: Movimenta
+      target: 
+        - 8
+      functionNames:
+        - shortCutMovimentoScari
+        - shortCutMovimentoCari
+      param:
+        - codice
+        - codice
+      className: 
+        - column_bt
+
+    - type: icon
+      icon: 
+       - list_alt
+      title: Storico
+      target: 
+        - 9
+      functionNames: 
+        - storMateriale
+      param: 
+        - codice
+      className: 
+        - column_bt
+  
+    - type: icon
+      icon: 
+        - insights
+      title: Riepilogo
+      target: 
+        - 10
+      functionNames: 
+        - riepMateriale
+      param:
+        - codice
+      className: 
+        - column_bt
+
+    - type: icon
+      icon: 
+        - edit
+      title: Modifica
+      target: 
+        - 11
+      functionNames: 
+        - editMateriale
+      param: 
+        - _id
+      className: 
+        - column_bt
+
+    - type: icon
+      icon: 
+        - delete
+      title: Elimina
+      target: 
+        - 12
+      functionNames: 
+        - deleMateriale
+      param: 
+        - _id
+      className: 
+        - column_bt
+
+  # OPZIONI PULSANTI TABELLA PAGINA MOVIMENTI-MATERIALE
+  buttonColumns_materiali_1_cod: []
+
+  # OPZIONI PULSANTI TABELLA PAGINA MATERIALI-NECESSARI
+  buttonColumns_materiali_nece:
+    - type: icon
+      icon:
+        - remove
+        - add
+      title: Scarica/Carica
+      target: 
+        - 7
+      functionNames:
+        - shortCutMovimentoScari
+        - shortCutMovimentoCari
+      param:
+        - codice
+        - codice
+      className: 
+        - column_bt
+      
+    - type: icon
+      icon: 
+        - insights
+      title: Riepilogo
+      target: 
+        - 8
+      functionNames: 
+        - riepMateriale
+      param: 
+        - codice
+      className: 
+        - column_bt
+
+    - type: icon
+      icon: 
+        - shopping_cart
+      title: Ordina
+      target: 
+        - 9
+      functionNames: 
+        - shortCutOrdine
+      param: 
+        - codice
+      className: 
+        - column_bt
+    
+  # OPZIONI PULSANTI TABELLA PAGINA MATERIALI-CASSETTIERA
+  buttonColumns_materiali_cassettiera:
+    - type: icon
+      icon:
+        - remove
+      title: Scarica
+      target:
+        - 7
+      functionNames:
+        - shortCutMovimentoScari
+      param:
+        - codice
+      className: 
+        - column_bt
+
+    - type: icon
+      icon: 
+        - insights
+      title: Riepilogo
+      target: 
+        - 8
+      functionNames: 
+        - riepMateriale
+      param: 
+        - codice
+      className: 
+        - column_bt
+
+    - type: icon
+      icon: 
+        - shopping_cart
+      title: Ordina
+      target: 
+        - 9
+      functionNames: 
+        - shortCutOrdine
+      param: 
+        - codice
+      className: 
+        - column_bt
+  
+  # OPZIONI PULSANTI TABELLA PAGINA MATERIALI-CASSETTIERA-DPI
+  buttonColumns_materiali_cassettiera_dpi:
+    - type: icon
+      icon:
+        - remove
+        - add
+      title: Scarica
+      target: 
+        - 7
+      functionNames:
+        - shortCutMovimentoScari
+        - shortCutMovimentoCari
+      param:
+        - codice
+        - codice
+      className: 
+        - column_bt
+
+    - type: icon
+      icon: 
+        - insights
+      title: Riepilogo
+      target: 
+       - 8
+      functionNames: 
+        - riepMateriale
+      param: 
+        - codice
+      className: 
+        - column_bt
+
+    - type: icon
+      icon: 
+        - shopping_cart
+      title: Ordina
+      target: 
+        - 9
+      functionNames: 
+        - shortCutOrdine
+      param: 
+        - codice
+      className: 
+        - column_bt
+  
+  # OPZIONI PULSANTI TABELLA PAGINA MATERIALI-ESAURIMENTO
+  buttonColumns_materiali_esaurimento:
+    - type: icon
+      icon: 
+       - list_alt
+      title: Storico
+      target: 
+        - 10
+      functionNames: 
+        - storMateriale
+      param: 
+        - codice
+      className: 
+        - column_bt
+
+    - type: icon
+      title: Riepilogo
+      icon: 
+        - insights
+      functionNames: 
+        - riepMateriale
+      param: 
+        - codice
+      target: 
+        - 11
+      className: 
+        - column_bt
+
+    - type: icon
+      icon: 
+        - shopping_cart
+      title: Ordina
+      target: 
+        - 12
+      functionNames: 
+        - shortCutOrdine
+      param: 
+        - codice
+      className: 
+        - column_bt
+    
+  #-------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
+
+
+
+#------------------------------- MOVIEMENTI ------------------------------------
+
+  #-------------------------------------------------------------------------------
+  # OPZIONI TABELLA PAGINA MOVIMENTI
+  options_movimenti_def:
+    paging: false
+    info: true
+    stateSave: true
+    searching: true
+    ordering: true
+    order:
+      - 5
+      - desc
+    fixedColumns: true
+    scrollY: 600
+    scrollX: false
+    scrollCollapse: true
+    processing: true
+    columns:
+      - title: Id
+        data: _id
+      - title: Codice
+        data: codice
+      - title: Causale
+        data: causale
+      - title: Quantità
+        data: quantita
+      - title: Giacenza Aspettata
+        data: giacenza_aspettata
+      - title: Data
+        data: data
+        type: date
+      - title: Ubicazioni
+        data: ubicazione
+      - title: Note
+        data: note
+    columnDefs:
+      - targets:
+          - 3
+          - 4
+        className: dt-right
+      - targets: 0
+        visible: false
+        searchable: false
+      - className: column_codice
+        targets: 1
+      - className: dt-center
+        targets:
+          - 5
+          - 8
+          - 9
+          - 10
+      - className: column_qt dt-right
+        targets:
+          - 3
+          - 4
+      - targets:
+          - 8
+          - 9
+          - 10
+        className: dt-center
+      - className:  dt-center
+        targets:
+          - 8
+          - 9
+          - 10
+      - orderable: false
+        targets:
+          - 8
+          - 9
+          - 10
+      - searchable: false
+        targets:
+          - 8
+          - 9
+          - 10
+
+  # OPZIONI TABELLA PAGINA MOVIMENTI-MATERIALE
+  options_movimenti_1_cod:
+    paging: false
+    info: true
+    stateSave: true
+    searching: false
+    ordering: true
+    order:
+      - 5
+      - desc
+    fixedColumns: true
+    scrollY: 500
+    scrollX: false
+    scrollCollapse: true
+    columns:
+      - title: Id
+        data: _id
+      - title: Codice
+        data: codice
+      - title: Causale
+        data: causale
+      - title: Quantità
+        data: quantita
+      - title: Giacenza Aspettata
+        data: giacenza_aspettata
+      - title: Data
+        data: data
+        type: date
+      - title: Ubicazioni
+        data: ubicazione
+      - title: Note
+        data: note
+    columnDefs:
+      - targets:
+          - 3
+          - 4
+        className: dt-right
+      - className: column_qt
+        targets:
+          - 3
+          - 4
+      - className: dt-center
+        targets:
+          - 5
+          - 8
+          - 9
+      - orderable: false
+        targets:
+          - 8
+          - 9
+      - searchable: false
+        targets:
+          - 8
+          - 9
+      - targets: 0
+        visible: false
+        searchable: false
+  #-------------------------------------------------------------------------------
+
+
+  #-------------------------------------------------------------------------------
+  # OPZIONI PULSANTI TABELLA PAGINA MOVIMENTI
+  buttonColumns_movimenti_def:
+    - type: icon
+      icon: edit
+      title: Modifica
+      target: 8
+      functionNames: showModMovimento
+      param: _id
+      className: 
+        - column_bt
+
+    - type: icon
+      icon: info
+      title: Info
+      target: 9
+      functionNames: goInfoPage
+      param: codice
+      className: 
+        - column_bt
+
+    - title: Elimina
+      type: icon
+      icon: delete
+      target: 10
+      functionNames: deleMovimento
+      param: _id
+      className: 
+        - column_bt
+
+  buttonColumns_movimenti_1_cod:
+    - type: icon
+      icon: edit
+      title: Modifica
+      target: 8
+      functionNames: showModMovimento
+      param: _id
+      className: 
+        - column_bt
+
+    - title: Elimina
+      type: icon
+      icon: delete
+      target: 9
+      functionNames: deleMovimento
+      param: _id
+      className: 
+        - column_bt
+  #-------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
+
+
+
+#------------------------------- ORDINI ----------------------------------------
+
+  #-------------------------------------------------------------------------------
+  # OPZIONI TABELLA PAGINA ORDINI
+  options_ordini_def:
+    paging: false
+    info: true
+    stateSave: true
+    searching: true
+    ordering: true
+    order:
+      - 5
+      - desc
+    fixedColumns: true
+    scrollY: 600
+    scrollX: false
+    scrollCollapse: true
+    columns:
+      - title: id
+        data: _id
+      - title: rif ordine
+        data: rif_ordine
+      - title: Codice
+        data: codice
+      - title: Quantità
+        data: quantita
+      - title: Data
+        data: data
+        type: date
+      - title: Note
+        data: note
+    columnDefs:
+      - targets:
+          - 3
+          - 4
+        className: dt-right
+      - targets: 0
+        visible: false
+        searchable: false
+      - className: column_codice
+        targets: 1
+      - className: column_qt dt-right
+        targets:
+          - 3
+          - 4
+      - className:  dt-center
+        targets:
+          - 6
+          - 7
+          - 8
+  #-------------------------------------------------------------------------------
+
+
+  #-------------------------------------------------------------------------------
+  # OPZIONI TABELLA PAGINA ORDINI
+  buttonColumns_ordini_def: 
+    - type: icon
+      icon: info
+      title: Info
+      target: 6
+      functionNames: goInfoPage
+      param: codice
+      className: 
+        - column_bt
+
+    - type: icon
+      icon: edit
+      title: Modifica
+      target: 7
+      functionNames: showModOrdine
+      param: _id
+      className: 
+        - column_bt
+    - title: Elimina
+      type: icon
+      icon: delete
+      target: 8
+      functionNames: deleOrdine
+      param: _id
+      className: 
+        - column_bt
+  #-------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
+
+
+
+#------------------------------- FORM MOVIMENTI --------------------------------
+
+  #-------------------------------------------------------------------------------
+  config_form_movimenti:
+    newMoviButton: true
+    hideDataInput: false
+
+  config_form_movimenti_nece:
+    newMoviButton: false
+    hideDataInput: false
+  #-------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
+
+
+#------------------------------- FORM ORDINI -----------------------------------
+
+  #-------------------------------------------------------------------------------
+  config_form_ordini_nece:
+    newMoviButton: false
+    hideDataInput: false
+  #-------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
+
+
+#------------------------------- ARRAY CODICI ----------------------------------
+
+  #-------------------------------------------------------------------------------
+  defaultCodiciNecessari:
+    - "091111"
+    - "091131"
+    - "690010001"
+    - "69001341"
+    - "69001354"
+    - cod_prova
+
+  defaultCodiciDpi:
+    - "690010001"
+    - "091139"
+    - "091131"
+    - "091111"
+    - "091141"
+    - "69001341"
+    - "69001354"
+    - "055745"
+    - "690002000"
+
+  defaultCodiciCass:
+    - "052091" 
+    - "052092"
+    - "052083"
+    - "052189"
+    - "055836"
+    - "055835"
+    - "055837"
+    - "052080"
+    - "052081"
+    - "052082"
+    - "056036"
+  
+  defaultCodiciTig:
+    - "052087"
+    - "052088"
+    - "052089"
+    - "052090"
+    - "091124"
+    - "091112"
+    - "054522"
+    - "054523"
+    - "091113"
+    - "091121"
+    - "091122"
+    - "091123"
+    - "091115"
+    - "054659"
+  
+  codiciDaInventariare:
+    - "052080"
+    - "052081"
+    - "052082"
+    - "052083"
+    - "052087"
+    - "052088"
+    - "052089"
+    - "052090"
+    - "052091"
+    - "052092"
+    - "052093"
+    - "052094"
+    - "052096"
+    - "052097"
+    - "052098"
+    - "052099"
+    - "052100"
+    - "052101"
+    - "052102"
+    - "052189"
+    - "052273"
+    - "054415"
+    - "054416"
+    - "054522"
+    - "054523"
+    - "054524"
+    - "054659"
+    - "054838"
+    - "054839"
+    - "054840"
+    - "055835"
+    - "055836"
+    - "055837"
+    - "056402"
+    - "056403"
+    - "056825"
+    - "056826"
+    - "056827"
+    - "056828"
+    - "8000000001"
+    - "8000000002"
+    - "22030SB020"
+    - "2207152705"
+    - "220672D436"
+    - "220672K436"
+    - "220714F705"
+    - "220714F610"
+    
+    
+    
+
+  #-------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------

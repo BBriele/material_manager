@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Movimenti</title>
+
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">
+        <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+
+
+        <script src="/jquery.min.js"></script>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+        <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdn.datatables.net/plug-ins/1.13.4/sorting/datetime-moment.js" type="text/javascript"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js" type="text/javascript"></script>
+
+
+        <script type="text/javascript"  src="/web_script.js"></script>
+        <script type="text/javascript"  src="/utility/tables_utility.js"></script>
+        <script type="text/javascript"  src="/utility/form_utility.js"></script>
+
+        <link rel="stylesheet" href="/css_table.css">
+
+    </head>
+    <body>
+        <div id="container_view_movimenti">    
+            <h1>Movimenti</h1>
+            
+            <!-- pulsante per mostrare il form per l'inserimento di un nuovo movimento -->
+            <button onclick="backToMateriali()">Torna ai Materiali</button>
+
+            <!-- pulsante per mostrare il form per l'inserimento di un nuovo movimento -->
+            <button onclick="showForm()">Nuovo movimento</button>
+
+
+            <!-- form per l'inserimento di un nuovo movimento -->
+            <form id="formMovimento" style="display: none">
+                <label for="codice">Codice:</label>
+                <input type="text" id="codice" name="codice" required><br>
+
+                <label for="causale">Causale:</label>
+                <!-- <input type="text" id="causale" name="causale" required><br> -->
+                <input list="opzioni" id="causale" name="causale" value="scari" required><br>
+                <datalist id="opzioni">
+                    <option value="scari">
+                    <option value="cari">
+                    <option value="INV">
+                </datalist>
+
+
+                <label for="quantita">Quantità:</label>
+                <!-- <input type="number" id="quantita" name="quantita" oninput="showGiacenza()" required><br> -->
+                <input type="number" id="quantita" name="quantita" required><br>
+
+                <label for="giacenza">Giacenza:</label>
+                <input type="number" id="giacenza" name="giacenza" required><br>
+
+                <label for="data">Data:</label>
+                <!-- <input type="datetime-local" id="data" name="data" oninput="showGiacenza()" required><br>  -->
+                <input type="datetime-local" id="data" name="data" required><br>
+
+                <label for="note">Note:</label>
+                <textarea id="note" name="note"></textarea><br>
+
+                <button type="submit" onclick="salvaMovimento()">Salva</button>
+                <button type="button" onclick="hideForm()">Annulla</button>
+            </form>
+
+            <!-- form per la modifica di movimento -->
+            <form id="modifica-form" style="display:none;">
+                <h2>Modifica movimento</h2>
+                <input type="hidden" name="_id" id="input-id">
+                <label for="input-codice">Codice</label>
+                <input type="text" name="codice" id="input-codice" required>
+                <label for="input-causale">Causale</label>
+                <input type="text" name="causale" id="input-causale" required>
+                <label for="input-quantita">Quantità</label>
+                <input type="number" name="quantita" id="input-quantita" required>
+                <label for="input-giacenza">Giacenza aspettata</label>
+                <input type="number" name="giacenza_aspettata" id="input-giacenza" required>
+                <label for="input-data">Data (yyyy/mm/gg hh:mm)</label>
+                <input name="data" id="input-data" type="datetime-local" required>
+                <label for="input-note">Note</label>
+                <textarea name="note" id="input-note"></textarea>
+                <button type="submit">Salva</button>
+                <button type="button" id="annulla-modifica">Annulla</button>
+            </form>
+
+            <!--TABELLA MOVIMENTI-->
+            <div id="div_table">
+                <input type="hidden" id="info-table-state" />
+            </div>
+            <script type="text/javascript"  src="/utility/storico_utility.js"></script>
+        </div>
+    </body>
+</html>

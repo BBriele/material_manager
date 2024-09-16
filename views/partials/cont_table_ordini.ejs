@@ -1,0 +1,116 @@
+<div id="container_view_ordini">
+    <!-- 
+        const OrdiniSchema = new Schema({
+            rif_ordine: { type: String, required: true },
+            codice: { type: String, required: true },
+            quantita: { type: Number, required: true },
+            data: { type: Date, default: Date.now },
+            note: { type: String }
+        }, { timestamps: true });
+    -->
+
+    <!-- TABELLA ORDINI -->
+    <div id="div_table_ordini">
+        <table id="table_container_ordini" class="display compact hover"></table>
+        <input type="hidden" id="info-table-state" />
+    </div>
+
+    <script async>
+        // Opzioni per la creazione della tabella
+        var options_ordini = JSON.parse('<%- JSON.stringify(options_ordini_s) %>');
+        
+        // Definizione dei pulsanti per le azioni sulla tabella
+        var buttonColumns_ordini = JSON.parse('<%- JSON.stringify(buttonColumns_ordini_s) %>');
+        
+        var colResizeOption = {
+            isEnabled: true,
+            hoverClass: 'dt-colresizable-hover',
+            hasBoundCheck: true,
+            minBoundClass: 'dt-colresizable-bound-min',
+            maxBoundClass: 'dt-colresizable-bound-max',
+            saveState: true,
+            isResizable: true
+        };
+        
+        //console.log("<%= selectedCod %>");
+        mainnOrdini('<%= selectedCod %>'); // Passa selectedCod come parametro a mainn()
+        
+        async function mainnOrdini(codice_load = "0") {
+            //console.log(codice_load);
+            if (codice_load === "0") {
+                fetchOrdini();
+            } else if (codice_load !== "0") {
+                fetchOrdiniByCod(codice_load);
+            }
+        }
+        
+        async function fetchOrdini() {
+            const response = await axios.get('/apiOrdini/getOrdini');
+            const ordini = response.data;
+            createDataTableOrdini(ordini, options_ordini, buttonColumns_ordini);
+        }
+        
+        async function fetchOrdiniByCod(cod) {
+            const response = await axios.get('/apiOrdini/getOrdiniByCod/' + cod);
+            const ordini = response.data;
+            createDataTableOrdini(ordini, options_ordini, buttonColumns_ordini);
+        }
+        
+        function createDataTableOrdini(jsonData, options_ordini, buttonColumns_ordini) {
+            //console.log(options_ordini);
+            var defaultoptions_ordini = {
+                ordering: true,
+                colResize: colResizeOption, // Opzioni per il ridimensionamento delle colonne
+                columnDefs: [
+                    { targets: [5], className: "dt-center" },
+                ]
+            };
+        
+            var mergedoptions_ordini = Object.assign({}, defaultoptions_ordini, options_ordini);
+        
+            if (Array.isArray(buttonColumns_ordini)) {
+                buttonColumns_ordini.forEach(function(buttonColumn) {
+                    mergedoptions_ordini.columns.push({ title: buttonColumn.title, data: null });
+                    mergedoptions_ordini.columnDefs.push({
+                        targets: buttonColumn.target,
+                        render: function(data, type, row, meta) {
+                            if (buttonColumn.icon) {
+                                return '<span class="material-icons" onclick="' + buttonColumn.functionName + '(\'' + row[buttonColumn.param] + '\')">' + buttonColumn.icon + '</span>';
+                            } else if (buttonColumn.type === "text") {
+                                buttonHTML = buttonColumn.text;
+                            } else {
+                                return '<button onclick="' + buttonColumn.functionName + '(\'' + row[buttonColumn.param] + '\')">' + buttonColumn.text + '</button>';
+                            }
+                        }
+                    });
+                });
+            }
+        
+            var dataTable_ordini = $("#table_container_ordini").DataTable(mergedoptions_ordini);
+        
+            dataTable_ordini.clear();
+            dataTable_ordini.rows.add(jsonData);
+            dataTable_ordini.draw();
+        }
+        
+        function editOrdine(id) {
+            showForm();
+        }
+        
+        function deleteOrdine(id) {
+            // Funzione per eliminare un ordine
+            var result = confirm("Sei sicuro di voler continuare?");
+        
+            if (result) {
+                //console.log("Ordine eliminato id" + id);
+                axios.delete("/apiOrdini/deleteOrdineById/" + id)
+                    .then((response) => {
+                        window.location.reload();
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                    });
+            }
+        }
+    </script>
+</div>

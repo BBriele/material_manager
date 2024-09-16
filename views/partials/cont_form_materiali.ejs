@@ -1,0 +1,154 @@
+<div id="container_form_materiale">
+    <!-- pulsante per mostrare il form per l'inserimento di un nuovo materiale -->
+    <button onclick="showFormNewMateriale()" id="showFormNewMateriale">Nuovo materiale</button>
+
+    <form id="formMateriale" style="display: none">
+        <!-- Campo nascosto per l'ID -->
+        <input type="hidden" name="_id" id="id">
+
+        <!-- Campo per il codice -->
+        <label for="codice">Codice:</label>
+        <input type="text" id="codice" name="codice" required><br>
+
+        <!-- Campo per la descrizione -->
+        <label for="descrizione">Descrizione:</label>
+        <input type="text" id="descrizione" name="descrizione" required><br>
+
+        <!-- Campo per il fornitore -->
+        <label for="fornitore">Fornitore:</label>
+        <input type="text" id="fornitore" name="fornitore"><br>
+
+        <!-- Campo per tempoConsegna -->
+        <label for="tempoConsegna">Tempo Consegna:</label>
+        <input type="text" id="tempoConsegna" name="tempoConsegna"><br>
+
+        <!-- Campo per la giacenza minima -->
+        <label for="giacenza_minima">Giacenza Minima:</label>
+        <input type="text" name="giacenza_minima" id="giac_min" required>
+
+        <!-- Campo per il reparto -->
+        <label for="reparto">Reparto:</label>
+        <input type="text" name="reparto" id="reparto">
+
+        <!-- Pulsante per salvare il form -->
+        <button type="submit">Salva</button>
+
+        <!-- Pulsante per annullare il form -->
+        <button type="button" id="annulla-form">Annulla</button>
+    </form>
+
+
+    <script>
+        // Funzioni
+
+        // Mostra il form per l'aggiunta di un nuovo materiale
+        function showFormNewMateriale() {
+            const formMater = document.querySelector('#formMateriale');
+            formMater.style.display = 'block';
+        }
+
+        // Mostra il form per la modifica di un materiale specifico
+        function showFormModMateriale(id) {
+            // Effettua una richiesta GET al server per ottenere i dati del materiale specificato dall'ID
+            axios.get("/apiMateriali/getMaterialiById/" + id)
+                .then((response) => {
+                    showFormNewMateriale();
+
+                    const formMater = document.querySelector('#formMateriale');
+                    // Popola i campi del form con i dati del materiale selezionato
+                    formMater.querySelector('#id').value = response.data[0]._id;
+                    formMater.querySelector('#codice').value = response.data[0].codice;
+                    formMater.querySelector('#descrizione').value = response.data[0].descrizione;
+                    formMater.querySelector('#fornitore').value = response.data[0].fornitore;
+                    formMater.querySelector('#tempoConsegna').value = response.data[0].tempoConsegna;
+                    formMater.querySelector('#giac_min').value = response.data[0].giacenza_minima;
+                    formMater.querySelector('#reparto').value = response.data[0].reparto;
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+        }
+
+        // Annulla il form e resetta i campi
+        function annullaForm() {
+            const formMater = document.querySelector('#formMateriale');
+            formMater.reset();
+            formMater.style.display = 'none';
+        }
+
+        // Event Listeners
+
+        // Aggiungi un listener per l'evento click sul pulsante di annullamento
+        document.querySelector('#annulla-form').addEventListener('click', annullaForm);
+
+        // Aggiungi un listener per l'evento submit del form
+        document.querySelector('#formMateriale').addEventListener('submit', (event) => {
+            const formMater = document.querySelector('#formMateriale');
+            event.preventDefault();
+            // Verifica se il campo ID ha un valore. Se non ha un valore, chiama la funzione addMateriale, altrimenti chiama la funzione modMateriale
+            if (!formMater.querySelector('#id').value) {
+                addMateriale();
+            } else {
+                modMateriale();
+            }
+        });
+
+        // Funzioni di comunicazione con il server
+
+        // Aggiungi un nuovo materiale
+        function addMateriale() {
+            // Ottieni i valori dai campi del form
+            const codice = document.getElementById('codice').value;
+            const descrizione = document.getElementById('descrizione').value;
+            const fornitore = document.getElementById('fornitore').value;
+            const tempoConsegna = document.getElementById('tempoConsegna').value;
+            const giac_min = document.getElementById('giac_min').value;
+            const repart = document.getElementById('reparto').value;
+
+            // Crea un oggetto dati con i valori ottenuti
+            const dati = {
+                codice: codice,
+                descrizione: descrizione,
+                fornitore: fornitore,
+                giacenza_minima: giac_min,
+                reparto: repart
+            };
+
+            // Effettua una richiesta POST al server per aggiungere il nuovo materiale
+            fetch('/apiMateriali/addMateriale', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(dati)
+            })
+                .then(() => {
+                    // Ricarica la pagina dopo il salvataggio del materiale
+                    window.location.reload();
+                })
+                .catch((err) => {
+                    console.error(err);
+                    alert('Errore durante il salvataggio del materiale');
+                });
+        }
+
+        // Modifica un materiale esistente
+        function modMateriale() {
+            const formMater = document.querySelector('#formMateriale');
+            const formData = new FormData(formMater);
+
+            // Effettua una richiesta PUT al server per modificare il materiale esistente
+            axios.put(`/apiMateriali/modMaterialeById/${formData.get('_id')}`, Object.fromEntries(formData))
+                .then((response) => {
+                    //console.log(response.data);
+                    //annullaForm();
+                    // Ricarica la pagina dopo la modifica del materiale
+                    window.location.reload();
+                })
+                .catch((error) => {
+                    console.error(error);
+                    alert('Errore durante la modifica del materiale');
+                });
+        }
+    </script>
+</div>

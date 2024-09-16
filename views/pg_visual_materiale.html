@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Materiali</title>
+
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <!-- <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">
+        <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script> -->
+
+
+        <script src="/jquery.min.js"></script>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
+        <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdn.datatables.net/select/1.6.2/js/dataTables.select.min.js"></script>
+        <script src="https://cdn.datatables.net/select/1.6.2/css/select.dataTables.min.css"></script>
+
+        <!-- <link href="https://cdn.datatables.net/1.11.3/css/dataTables.material.min.css" rel="stylesheet" type="text/css" />
+        <script src="https://cdn.datatables.net/1.11.3/js/dataTables.material.min.js"></script> -->
+
+
+
+        <script type="text/javascript"  src="/web_script.js"></script>
+        <script type="text/javascript"  src="/utility/tables_utility.js"></script>
+        <script type="text/javascript"  src="/utility/form_utility.js"></script>
+
+        <link rel="stylesheet" href="/css_table.css">
+
+
+    </head>
+    <body>
+        <div id="container_view_materiale"> 
+            <h1>Materiali</h1>    
+            
+            
+            <!-- pulsante per mostrare il form per l'inserimento di un nuovo materiale -->
+            <button onclick="showForm()" id="showFormNewMateriale">Nuovo materiale</button>
+
+            <div id="div_form">
+                <!-- form per l'inserimento di un nuovo materiale -->
+                <form id="formMateriale" style="display: none">
+                    <label for="codice">Codice:</label>
+                    <input type="text" id="codice" name="codice" required><br>
+
+                    <label for="descrizione">Descrizione:</label>
+                    <input type="text" id="descrizione" name="descrizione" required><br>
+
+                    <label for="fornitore">Fornitore:</label>
+                    <input type="text" id="fornitore" name="fornitore" required><br>
+
+                    <label for="giac_min">Giacenza Minima</label>
+                    <input type="text" name="giac_min" id="giac_min" required>
+                    
+                    <label for="reparto">Reparto</label>
+                    <input type="text" name="reparto" id="reparto">
+
+                    <button type="submit" onclick="salvaMateriale()">Salva</button>
+                    <button type="button" id="annulla-aggiunta">Annulla</button>
+                </form>
+
+                <!-- form per la modifica di materiale -->
+                <form id="modifica-form" style="display:none;">
+                    <label for="input-codice">Modifica materiale</h2>
+                    <input type="hidden" name="_id" id="input-id">
+
+                    <label for="input-codice">Codice</label>
+                    <input type="text" name="codice" id="input-codice" required>
+
+                    <label for="input-descrizione">Descrizione</label>
+                    <input type="text" name="descrizione" id="input-descrizione" required>
+
+                    <label for="input-fornitore">Fornitore</label>
+                    <input type="text" name="fornitore" id="input-fornitore">
+
+                    <label for="input-giac_min">Giacenza Minima</label>
+                    <input type="number" name="giacenza_minima" id="input-giac_min">
+
+                    <label for="input-reparto">Reparto</label>
+                    <input type="text" name="reparto" id="input-reparto">
+
+                    <button type="submit">Salva</button>
+                    <button type="button" id="annulla-modifica">Annulla</button>
+                </form>
+            </div>
+
+            <div id="div_table">
+                <input type="hidden" id="info-table-state" />
+            </div>
+
+            <script type="text/javascript"  src="/utility/materiale_utility.js"></script>
+        </div>
+        
+        
+    </body>
+</html>

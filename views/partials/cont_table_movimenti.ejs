@@ -1,0 +1,125 @@
+<div id="container_view_movimenti">
+    <!--
+        const MovimentoSchema = new Schema({
+            codice: { type: String, required: true },
+            causale: { type: String, required: true },
+            quantita: { type: Number, required: true },
+            giacenza_aspettata: { type: Number, required: true },
+            data: { type: Date, default: Date.now },
+            note: { type: String },
+            ubicazione: {type: String}
+        }, { timestamps: true });
+    -->
+
+    <!-- TABELLA MOVIMENTI -->
+    <div id="div_table_movimenti">
+        <table id="<%= namespace %>_table_container_movimenti" class="display compact hover cell-border"></table>
+        <input type="hidden" id="<%= namespace %>_info-table-state" />
+    </div>
+
+    <script async>
+        (async function(namespace) {
+            // Opzioni per la creazione della tabella
+            var options_movimenti = JSON.parse('<%- JSON.stringify(options_movimenti_s) %>');
+            //console.log(options_movimenti);
+
+            // Definizione dei pulsanti per le azioni sulla tabella
+            var buttonColumns_movimenti = JSON.parse('<%- JSON.stringify(buttonColumns_movimenti_s) %>');
+
+            var colResizeOption = {
+                isEnabled: true,
+                hoverClass: 'dt-colresizable-hover',
+                hasBoundCheck: true,
+                minBoundClass: 'dt-colresizable-bound-min',
+                maxBoundClass: 'dt-colresizable-bound-max',
+                saveState: true,
+                isResizable: true
+            };
+
+            mainnMovimenti('<%= selectedCod %>'); // Passa selectedCod come parametro a mainn()
+
+            async function mainnMovimenti(codice_load = "0") {
+                if (codice_load === "0") {
+                    fetchMovimenti();
+                } else if (codice_load !== "0") {
+                    fetchMovimentiByCod(codice_load);
+                }
+            }
+
+            async function fetchMovimenti() {
+                const response = await axios.get('/apiMovimenti/getMovimenti');
+                const movimenti = response.data;
+                createDataTableMovimenti(movimenti, options_movimenti, buttonColumns_movimenti);
+            }
+
+            async function fetchMovimentiByCod(cod) {
+                const response = await axios.get('/apiMovimenti/getMovimentiByCod/' + cod);
+                const movimenti = response.data;
+                createDataTableMovimenti(movimenti, options_movimenti, buttonColumns_movimenti);
+            }
+
+            function createDataTableMovimenti(jsonData, options_movimenti, buttonColumns_movimenti) {
+                var defaultoptions_movimenti = {
+                    ordering: true,
+                    colResize: colResizeOption, // Opzioni per il ridimensionamento delle colonne
+                    columnDefs: [
+                        { targets: [5], className: "dt-center" },
+                        {
+                            targets: [5], // Indice della colonna delle date (considerando 0 come la prima colonna)
+                            render: function(data, type, row) {
+                                return data; // Restituisce il valore originale senza formattazione
+                            }
+                        }
+                    ]
+                };
+
+                var mergedoptions_movimenti = Object.assign({}, defaultoptions_movimenti, options_movimenti);
+
+                if (Array.isArray(buttonColumns_movimenti)) {
+                    buttonColumns_movimenti.forEach(function(buttonColumn) {
+                        mergedoptions_movimenti.columns.push({ title: buttonColumn.title, data: null });
+                        mergedoptions_movimenti.columnDefs.push({
+                            targets: buttonColumn.target,
+                            render: function(data, type, row, meta) {
+                                if (buttonColumn.icon) {
+                                    return '<span class="material-icons" onclick="' + buttonColumn.functionNames + '(\'' + row[buttonColumn.param] + '\')">' + buttonColumn.icon + '</span>';
+                                } else if (buttonColumn.type === "text") {
+                                    buttonHTML = buttonColumn.text;
+                                } else {
+                                    return '<button onclick="' + buttonColumn.functionNames + '(\'' + row[buttonColumn.param] + '\')">' + buttonColumn.text + '</button>';
+                                }
+                            }
+                        });
+                    });
+                }
+
+                var dataTable_movimenti = $("#" + namespace + "_table_container_movimenti").DataTable(mergedoptions_movimenti);
+
+                //$.fn.dataTable.moment('HH:mm MMM D, YY');
+
+                dataTable_movimenti.clear();
+                dataTable_movimenti.rows.add(jsonData);
+                dataTable_movimenti.draw();
+            }
+
+            function editMovimento(id) {
+                showForm();
+            }
+
+            function deleMovimento(id) {
+                // Funzione per eliminare un movimento
+                var result = confirm("Sei sicuro di voler continuare?");
+
+                if (result) {
+                    axios.delete("/apiMovimenti/deleteMovimentoById/" + id)
+                        .then((response) => {
+                            window.location.reload();
+                        })
+                        .catch((error) => {
+                            console.error(error);
+                        });
+                }
+            }
+        })('<%= namespace %>');
+    </script>
+</div>

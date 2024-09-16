@@ -1,0 +1,218 @@
+<html>
+  <head>
+
+    <meta charset="utf-8">
+
+    <title>HOME</title>
+ 
+    <!---------------------------------------------------------------------------------------------------------------------------------->
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+
+      
+    <script src="/jquery.min.js"></script>
+    <script src="moment/min/moment.min.js" type="text/javascript"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"> </script>
+    <script src="datetime/lib/datetime.js" type="text/javascript"></script>
+
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>    
+    <script src="https://cdn.datatables.net/select/1.6.2/js/dataTables.select.min.js"></script>
+    <script src="https://cdn.datatables.net/fixedheader/3.3.2/js/dataTables.fixedHeader.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap4.min.js"></script>
+    <script src="//cdn.datatables.net/plug-ins/1.13.4/dataRender/datetime.js"></script>    
+    <script src="https://cdn.datatables.net/plug-ins/1.13.4/sorting/datetime-moment.js" type="text/javascript"></script>
+
+    
+    <script type="text/javascript"  src="/web_script.js"></script>
+    <!--<script type="text/javascript"  src="/utility/tables_utility.js"></script>-->
+    <!--<script type="text/javascript"  src="/utility/form_utility.js"></script>-->
+
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
+    <script src="https://cdn.datatables.net/select/1.6.2/css/select.dataTables.min.css"></script>
+    <link rel="stylesheet" href="/css_table.css">
+
+    <!---------------------------------------------------------------------------------------------------------------------------------->
+    <style>
+        
+    </style>    
+
+    
+
+  </head>
+  <body>
+    <%  
+        //-------------------------------------------------------------------------------------------------------------------
+        //  VARIABILI CONFIGUARZIONE GLOBALI
+        var options_data_prossimo_ordine = renderOption.config.options_data_prossimo_ordine;
+        //-------------------------------------------------------------------------------------------------------------------
+
+        //-------------------------------------------------------------------------------------------------------------------
+        //  VARIABILI CONFIGUARZIONE TABELLE MATERIALI
+        var options_materiali_def = renderOption.config.options_materiali_def;
+        var options_materiali_1_cod = renderOption.config.options_materiali_1_cod;
+        var options_materiali_necessari = renderOption.config.options_materiali_necessari;
+        var options_materiali_cassettiera = renderOption.config.options_materiali_cassettiera;
+        var options_materiali_cassettiera_dpi = renderOption.config.options_materiali_cassettiera_dpi;
+        var options_materiali_esaurimento = renderOption.config.options_materiali_esaurimento;
+        //-------------------------------------------------------------------------------------------------------------------
+
+        //-------------------------------------------------------------------------------------------------------------------
+        //  VARIABILI CONFIGUARZIONE PULSANTI TABELLE MATERIALI
+        var buttonColumns_materiali_def = renderOption.config.buttonColumns_materiali_def;
+        var buttonColumns_materiali_1_cod = renderOption.config.buttonColumns_materiali_1_cod;
+        var buttonColumns_materiali_nece = renderOption.config.buttonColumns_materiali_nece;
+        var buttonColumns_materiali_cassettiera = renderOption.config.buttonColumns_materiali_cassettiera;
+        var buttonColumns_materiali_cassettiera_dpi = renderOption.config.buttonColumns_materiali_cassettiera_dpi;
+        var buttonColumns_materiali_esaurimento = renderOption.config.buttonColumns_materiali_esaurimento;
+        //-------------------------------------------------------------------------------------------------------------------
+
+        //-------------------------------------------------------------------------------------------------------------------
+        //  VARIABILI CONFIGUARZIONE TABELLE MOVIMENTI
+        var options_movimenti_def = renderOption.config.options_movimenti_def;
+        var options_movimenti_1_cod = renderOption.config.options_movimenti_1_cod;
+        //-------------------------------------------------------------------------------------------------------------------
+
+        //-------------------------------------------------------------------------------------------------------------------
+        //  VARIABILI CONFIGUARZIONE PULSANTI TABELLE MOVIMENTI
+        var buttonColumns_movimenti_def = renderOption.config.buttonColumns_movimenti_def;
+        var buttonColumns_movimenti_1_cod = renderOption.config.buttonColumns_movimenti_1_cod;
+        //-------------------------------------------------------------------------------------------------------------------
+
+        //-------------------------------------------------------------------------------------------------------------------
+        //  VARIABILI CONFIGUARZIONE TABELLE ORDINI
+        var options_ordini_def = renderOption.config.options_ordini_def;
+        //-------------------------------------------------------------------------------------------------------------------
+
+        //-------------------------------------------------------------------------------------------------------------------
+        //  VARIABILI CONFIGUARZIONE PULSANTI TABELLE ORDINI
+        var buttonColumns_ordini_def = renderOption.config.buttonColumns_ordini_def;
+        //-------------------------------------------------------------------------------------------------------------------
+
+        //-------------------------------------------------------------------------------------------------------------------
+        //  VARIABILI CONFIGUARZIONE FORM MOVIMENTI
+        var config_form_movimenti = renderOption.config.config_form_movimenti;
+        var config_form_movimenti_nece = renderOption.config.config_form_movimenti_nece;
+        //-------------------------------------------------------------------------------------------------------------------
+
+        //-------------------------------------------------------------------------------------------------------------------
+        //  VARIABILI CONFIGUARZIONE FORM ORDINI
+        var config_form_ordini_nece = renderOption.config.config_form_ordini_nece;
+        //-------------------------------------------------------------------------------------------------------------------
+
+        //-------------------------------------------------------------------------------------------------------------------
+        //  LISTE CODICI
+        var defaultCodiciNecessari = renderOption.config.defaultCodiciNecessari;
+        var defaultCodiciDpi = renderOption.config.defaultCodiciDpi;
+        var defaultCodiciCass = renderOption.config.defaultCodiciCass;
+        var defaultCodiciTig = renderOption.config.defaultCodiciTig;
+        var codiciDaInventariare = renderOption.config.codiciDaInventariare;
+        //-------------------------------------------------------------------------------------------------------------------
+    %>
+
+    <% //console.log() %>
+
+    <%- include("partials/cont_navbar.ejs", {buildView: renderOption.buildView}) %>
+    <br>
+
+    <div id="container_body">
+        
+        <%# RENDER VISTA HOME %>
+        <% if (renderOption.buildView === "home") {  %>
+
+            <h1>BENVENUTI</h1>
+            
+        
+        <%# RENDER VISTA MATERIALI %>
+        <% } else if(renderOption.buildView === "mate") { %>
+            
+
+            <%- include("partials/cont_form_materiali.ejs") %>
+            <%- include("partials/cont_form_movimenti.ejs", { codice_movimento_p: "0", config_form_movimenti: config_form_movimenti_nece }) %>
+            
+            <%# RENDER VISTA MATERIALE SELEZIONATO %>
+            <% if (typeof renderOption.selectedCod !== 'undefined') { %>
+
+                <%- include("partials/cont_table_materiali.ejs", { codici_materiali: renderOption.selectedCod, namespace: "materiali_necessari", options_materiali_s: options_materiali_def, buttonColumns_materiali_s: buttonColumns_materiali_def }) %>
+            
+            <%# RENDER VISTA TUTTI I MATERIALI %>
+            <% } else { %>
+
+                <%- include("partials/cont_table_materiali.ejs", { codici_materiali: "", namespace: "materiali_necessari", options_materiali_s: options_materiali_def, buttonColumns_materiali_s: buttonColumns_materiali_def, dataProssimoOrdine: options_data_prossimo_ordine }) %>
+
+            <% } %>
+        
+        <%# RENDER VISTA MOVIMENTI %>
+        <% } else if(renderOption.buildView === "movi") { %>    
+
+            <%# RENDER VISTA MOVIMENTI SELEZIOATI PER CODICE %>
+            <% if (typeof renderOption.selectedCod !== 'undefined') { %>
+
+                <%- include("partials/cont_table_materiali.ejs", { codici_materiali: renderOption.selectedCod, namespace: "tabella_materiali", options_materiali_s: options_materiali_1_cod, buttonColumns_materiali_s: buttonColumns_materiali_1_cod, dataProssimoOrdine: options_data_prossimo_ordine }) %>
+
+                <%- include("partials/cont_form_movimenti.ejs", { codice_movimento_p: renderOption.selectedCod, config_form_movimenti: config_form_movimenti }) %>
+                <%- include("partials/cont_table_movimenti.ejs", { selectedCod: renderOption.selectedCod, namespace: "tabella_movimenti", options_movimenti_s: options_movimenti_1_cod, buttonColumns_movimenti_s: buttonColumns_movimenti_1_cod }) %>
+            
+            <%# RENDER VISTA TUTTI I MOVIMENTI %>
+            <% } else { %>
+
+                <%- include("partials/cont_form_movimenti.ejs", { codice_movimento_p: "0", config_form_movimenti: config_form_movimenti }) %>
+                <%- include("partials/cont_table_movimenti.ejs", { selectedCod: "0", namespace: "tabella_movimenti", options_movimenti_s: options_movimenti_def, buttonColumns_movimenti_s: buttonColumns_movimenti_def }) %>
+
+            <% } %>
+
+        <%# RENDER VISTA RIEPILOGO %>
+        <% } else if(renderOption.buildView === "riep"){ %>
+
+            <%- include("partials/cont_table_materiali.ejs", { codici_materiali: renderOption.selectedCod, namespace: "tabella_materiali", options_materiali_s: options_materiali_1_cod, buttonColumns_materiali_s: buttonColumns_materiali_1_cod, dataProssimoOrdine: options_data_prossimo_ordine }) %>
+            <%- include("partials/cont_view_riepilogo.ejs", { cod_mate_chart: renderOption.selectedCod }) %>
+
+        <%# RENDER VISTA NECESSARI %>
+        <% }  else if(renderOption.buildView === "nece"){ %>
+
+            <%- include("partials/cont_form_movimenti.ejs", { codice_movimento_p: "0", config_form_movimenti: config_form_movimenti_nece }) %>
+            <%- include("partials/cont_form_ordini.ejs", { codice_ordine_p: "0", namespace: "numberOne", config_form_ordine: config_form_ordini_nece }) %>
+            <div id="container_left_materiali">
+                <%- include("partials/cont_table_materiali.ejs", { codici_materiali: defaultCodiciNecessari, namespace: "materiali_necessari_def", options_materiali_s: options_materiali_necessari, buttonColumns_materiali_s: buttonColumns_materiali_nece, dataProssimoOrdine: options_data_prossimo_ordine }) %>
+            </div>
+            <div id="container_right_materiali">
+                <%- include("partials/cont_table_materiali.ejs", { codici_materiali: renderOption.selectedCod, namespace: "materiali_necessari", options_materiali_s: options_materiali_necessari, buttonColumns_materiali_s: buttonColumns_materiali_nece, dataProssimoOrdine: options_data_prossimo_ordine }) %>
+            </div>
+            
+
+        <%# RENDER VISTA ORDINI %>
+        <% } else if(renderOption.buildView === "ordi"){ %>
+
+            <%- include("partials/cont_form_ordini.ejs", { codice_ordine_p: "0", namespace: "numberOne", config_form_ordine: config_form_movimenti_nece }) %>
+            <%- include("partials/cont_table_ordini.ejs", { selectedCod: "0", options_ordini_s: options_ordini_def, buttonColumns_ordini_s: buttonColumns_ordini_def }) %>
+        
+        <%# RENDER VISTA CASSETTIERA %>
+        <% } else if(renderOption.buildView === "cass"){ %>
+
+            <%- include("partials/cont_form_movimenti.ejs", { codice_movimento_p: "0", config_form_movimenti: config_form_movimenti_nece }) %>
+
+            <%- include("partials/cont_table_materiali.ejs", { codici_materiali: defaultCodiciDpi, namespace: "materiali_dpi", options_materiali_s: options_materiali_cassettiera_dpi, buttonColumns_materiali_s: buttonColumns_materiali_cassettiera_dpi, dataProssimoOrdine: options_data_prossimo_ordine }) %>
+            
+            <%- include("partials/cont_table_materiali.ejs", { codici_materiali: defaultCodiciCass, namespace: "materiali_cass", options_materiali_s: options_materiali_cassettiera, buttonColumns_materiali_s: buttonColumns_materiali_cassettiera, dataProssimoOrdine: options_data_prossimo_ordine }) %>
+            
+            <%- include("partials/cont_table_materiali.ejs", { codici_materiali: defaultCodiciTig, namespace: "materiali_tig", options_materiali_s: options_materiali_cassettiera, buttonColumns_materiali_s: buttonColumns_materiali_cassettiera, dataProssimoOrdine: options_data_prossimo_ordine }) %>
+
+        <% } else if(renderOption.buildView === "esau"){ %>
+            <%- include("partials/cont_form_ordini.ejs", { codice_ordine_p: "0", namespace: "formOrdiniEsaurimento", config_form_ordine: config_form_ordini_nece }) %>
+            <%- include("partials/cont_table_materiali.ejs", { codici_materiali: "", namespace: "materiali_necessari", options_materiali_s: options_materiali_esaurimento, buttonColumns_materiali_s: buttonColumns_materiali_esaurimento, dataProssimoOrdine: options_data_prossimo_ordine }) %>
+            
+        <% } else if(renderOption.buildView === "expo"){ %>
+            <%- include("partials/cont_form_pdf_materiali.ejs", { namespace: "pdf_materiali", codici_materiali: codiciDaInventariare}) %>
+                        
+        <% } %>
+    </div>
+
+    <div id="container_footer">
+        
+    </div>
+
+  </body>
+</html>

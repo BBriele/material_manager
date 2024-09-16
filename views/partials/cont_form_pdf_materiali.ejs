@@ -1,0 +1,149 @@
+
+<h1>Esporta Tabella PDF</h1>
+<style>
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f1f1f1;
+        width: 500px;
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        padding: 12px 16px;
+        max-height: 120px;
+        overflow-y: scroll;
+    }
+    .dropdown-materiali:hover .dropdown-content {
+        display: flex;
+        flex-direction: column; 
+    }
+    .dropdown-colonne:hover .dropdown-content {
+        display: flex;
+        flex-direction: column; 
+    }
+
+    .labelCheckboxMateriali{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        overflow-inline:clip;
+        border: black 1px solid;
+    }
+    .checkboxMateriali{
+        margin: 0;
+        order: 2;
+        padding-right: 0px;
+    }
+    
+</style>
+
+<% var codici = Array.isArray(codici_materiali) ? codici_materiali : [codici_materiali]; %>
+<form id="form_export">
+    <div class="dropdown-materiali">
+        <span>Seleziona Materiali</span>
+        <div class="dropdown-content" id="dropdown-content">
+        </div>
+    </div>
+    <br>
+    <br>
+    <div class="dropdown-colonne">
+        <span>Seleziona Colonne</span>
+        <div class="dropdown-content" id="dropdown-content-colonne">
+        </div>
+    </div>
+    <br>
+    <button type="submit">Esporta PDF</button>
+</form>
+<script>
+
+    (async function(namespace) {
+
+        var codici = '<%= codici %>';
+        // chiamata axios per ottenere colelction su getMateriali
+        var materiali = await axios.get('apiMateriali/getMateriali');
+        //console.log(materiali.data);
+
+        //console.log(codici);
+
+        // Funzione per popolare il menu a tendina con le opzioni dall'array di oggetti
+        function populateDropdownMateriali(materiali) {
+            var dropdownContainer = document.getElementById('dropdown-content');
+
+            materiali.forEach(function (option) {
+                var checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.name = "materiali";
+                checkbox.className = 'checkboxMateriali';
+                checkbox.value = option.codice;
+                checkbox.checked = codici.includes(option.codice);
+                
+                var label = document.createElement('label');
+                label.className = 'labelCheckboxMateriali';
+                label.id = option.codice;
+                label.appendChild(checkbox);
+                label.appendChild(document.createTextNode(' ' + option.codice + ' - ' + option.descrizione));
+                label.appendChild(document.createElement('br'));
+
+                dropdownContainer.appendChild(label);
+            });
+        }
+
+        // Funzione per popolare il menu a tendina con i nomi delle chiavi dell'oggetto materiali
+        function populateDropdownColonne(materiali) {
+            var dropdownContainer = document.getElementById('dropdown-content-colonne');
+            var keys = Object.keys(materiali);
+
+            keys.forEach(function(key) {
+                var checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.name = "colonne"; // Imposta il nome del checkbox con il nome della chiave
+                checkbox.value = key;
+
+                checkbox.className = 'checkboxMateriali';
+                // Puoi aggiungere ulteriori logiche per controllare se il checkbox dovrebbe essere spuntato
+                //console.log(key);
+
+                var label = document.createElement('label');
+                label.className = 'labelCheckboxMateriali';
+                label.appendChild(checkbox);
+                label.appendChild(document.createTextNode(' ' + key)); // Aggiungi il nome della chiave come testo del label
+                label.appendChild(document.createElement('br'));
+
+                dropdownContainer.appendChild(label);
+            });
+        }
+
+        // Seleziona il form dal DOM utilizzando il suo ID o un altro selettore
+        var form = document.getElementById('form_export');
+
+        // Aggiungi un event listener per l'evento "submit"
+        form.addEventListener('submit', function(event) {
+            // Impedisci il comportamento di default del form, che è l'invio del modulo
+            event.preventDefault();
+
+            var checkboxesMateriali = document.querySelectorAll('input[name="materiali"]:checked');
+            var checkboxesColonne = document.querySelectorAll('input[name="colonne"]:checked');
+
+            const codcieValues = Array.from(checkboxesMateriali).map(checkbox => checkbox.value);
+            const colonneValues = Array.from(checkboxesColonne).map(checkbox => checkbox.value);
+
+
+
+            //console.log(codcieValues);
+            //console.log(colonneValues);
+
+            // Esegui la tua funzione qui
+            esportaPDF(codcieValues, colonneValues);
+        });
+
+
+        async function esportaPDF(listaCodici, listaColonne){
+            await axios.post("/apiMateriali/getMaterialiByCodicePDF", {
+                codici: listaCodici,
+                colonne: listaColonne
+            })
+        }
+
+        // Chiamare la funzione per popolare il menu a tendina
+        populateDropdownMateriali(materiali.data);
+        populateDropdownColonne(materiali.data[0]);
+    })('<%= namespace %>');
+</script>

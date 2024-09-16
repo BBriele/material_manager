@@ -1,0 +1,356 @@
+<div>
+  <style>
+    #chartContainer {
+      width: 85%;
+      height: 400px; /* Imposta l'altezza desiderata */
+    }
+
+    #container {
+      display: flex; /* Utilizziamo il display flessibile per il contenitore */
+    }
+
+    #div_info_movimenti, #chartContainer {
+      width: 40%;
+      margin-left: 5%;
+      margin-right: 5%;
+      float: left;
+      box-sizing: border-box;
+    }
+
+    .clear {
+      clear: both;
+    }
+  </style>
+
+    <div id="div_range_date">
+      <label for="startDateInput">Data di inizio:</label>
+      <input id="startDateInput" type="date" min="" max="">
+      <label for="endDateInput">Data di fine:</label>
+      <input id="endDateInput" type="date" min="" max="">
+      <button id="last1Day">Ultimi 1 giorno</button>
+      <button id="last7Days">Ultimi 7 giorni</button>
+      <button id="last30Days">Ultimi 30 giorni</button>
+      <button id="last90Days">Ultimi 90 giorni</button>
+      <button id="updateChartRange">Aggiorna</button>
+    </div>
+
+    <div id="div_container">
+      <div id="div_info_movimenti">
+        <table id="table_info_movi">
+          
+        </table>
+      </div>
+
+      <div id="chartContainer">
+        <canvas id="myChart"></canvas>
+      </div>
+      <div class="clear"></div>
+    </div>
+
+  <script async>  
+
+    MainnRiepilo()
+    async function MainnRiepilo(){
+
+      // Eseguire la richiesta Axios per ottenere i dati dal server
+      const codice = '<%= cod_mate_chart %>';
+      
+      var chartData = []; // Variabile globale per memorizzare i dati originali del grafico
+      var startDateISO = ""; // Variabile globale per la data di inizio in formato ISO
+      var endDateISO = ""; // Variabile globale per la data di fine in formato ISO
+      var minDate = "";
+      var maxDate = "";
+
+      chartData = await getMovimentibyCodice(codice);
+
+
+      document.getElementById('startDateInput').addEventListener('input', function() {
+        startDateISO = new Date(this.value).toISOString();
+        startDateISO = startDateISO.split('T')[0];
+        startDateISO += "T00:00:00";
+      });
+
+      document.getElementById('endDateInput').addEventListener('input', function() {
+        endDateISO = new Date(this.value).toISOString();
+        endDateISO = endDateISO.split('T')[0];
+        endDateISO += "T23:59:59";
+      });
+
+      // Aggiungi l'event listener al pulsante di aggiornamento
+      var updateButton = document.getElementById('updateChartRange');
+      updateButton.addEventListener('click', function() {
+        updateDateRange();
+        updateChart(chartData, startDateISO, endDateISO); // Chiama la funzione di aggiornamento del grafico
+
+        //generateInfoDiv(codice, startDateISO, endDateISO);
+        
+        generateInfoTable(chartData, startDateISO, endDateISO);
+      });
+
+          
+      
+      //console.log("chartData:  ", chartData);
+
+
+      minDate = new Date(chartData[0].data);
+      maxDate = new Date(chartData[chartData.length - 1].data);
+
+      var startDateInput = document.getElementById('startDateInput');
+      var endDateInput = document.getElementById('endDateInput');
+
+      // Imposta il valore minimo e massimo per gli input delle date
+      startDateInput.min = minDate.toISOString().split('T')[0];
+      startDateInput.max = maxDate.toISOString().split('T')[0];
+
+      endDateInput.min = minDate.toISOString().split('T')[0];
+      endDateInput.max = maxDate.toISOString().split('T')[0];
+
+      // Imposta il valore predefinito per gli input delle date
+      startDateInput.value = minDate.toISOString().split('T')[0];
+      //console.log(minDate.toISOString().split('T')[0]);
+      endDateInput.value = maxDate.toISOString().split('T')[0];  
+
+      startDateISO = minDate.toISOString().split('T')[0];
+      startDateISO += "T00:00:00";
+      endDateISO = maxDate.toISOString().split('T')[0];
+      endDateISO += "T23:59:59";
+      
+      generateChart(chartData);
+      //generateInfoDiv(codice, startDateISO, endDateISO);
+      generateInfoTable(chartData, startDateISO, endDateISO);
+    }
+    
+    function updateDateRange(){
+        startDateISO = new Date(document.getElementById('startDateInput').value).toISOString();
+        startDateISO = startDateISO.split('T')[0];
+        startDateISO += "T00:00:00";
+        console.log(startDateISO);
+        endDateISO = new Date(document.getElementById('endDateInput').value).toISOString();
+        endDateISO = endDateISO.split('T')[0];
+        endDateISO += "T23:59:59";
+    }
+
+    function generateChart(data) {
+      //console.log("chartData: ", data);
+      var chartContainer = document.getElementById('chartContainer');
+      var canvas = document.getElementById('myChart');
+
+      // Verifica se esiste già un canvas in uso
+      if (canvas) {
+        chartContainer.removeChild(canvas);
+      }
+
+      // Crea un nuovo canvas per il grafico
+      var newCanvas = document.createElement('canvas');
+      newCanvas.id = 'myChart';
+      chartContainer.appendChild(newCanvas);
+
+      var labels = data.map(function (item) {
+        var itemDate = new Date(item.data);
+        return itemDate.toLocaleString('it-IT', { day:'numeric', month:'numeric', year:'numeric', hour: 'numeric', minute: 'numeric' });
+      });
+
+      var values = data.map(function (item) {
+        return item.giacenza_aspettata;
+      });
+
+      var ctx = newCanvas.getContext('2d');
+      var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'Giacenza Aspettata',
+              data: values,
+              fill: false,
+              borderColor: 'rgb(75, 192, 192)',
+              tension: 0.1,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: {
+              display: true,
+              title: {
+                display: true,
+                text: 'Tempo',
+              },
+            },
+            y: {
+              display: true,
+              title: {
+                display: true,
+                text: 'Giacenza Aspettata',
+              },
+            },
+          },
+        },
+      });
+    }
+
+
+
+
+    function updateChart(chartData, startDateISO, endDateISO) {
+      // Filtra i dati in base alle date di inizio e fine
+      var filteredData = chartData.filter(function(item) {
+        var itemDate = new Date(item.data);
+
+        return itemDate >= new Date(startDateISO) && itemDate <= new Date(endDateISO);
+      });
+
+      //console.log("FilteredChartData: ", filteredData);
+      generateChart(filteredData); // Genera il grafico con i dati filtrati
+    }
+    
+    async function getMovimentibyCodice(codice){
+      const response =  await axios.get('/apiMovimenti/getMovimentiByCod/' + codice);
+      return response.data;
+    }
+
+    async function getInfoCodice(codice, causale, operazione, iniData, finData) {
+      //console.log("startDateISO: ", iniData)
+      //console.log("endDateISO: ", finData);
+      try {
+        const response = await axios.get('/apiMovimenti/getInfoMovimentiByDate', {
+          params: {
+            startDate: iniData,
+            endDate: finData,
+            codice: codice,
+            causale: causale,
+            operazione: operazione
+          }
+        });
+        return response.data
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    async function generateInfoTable(codice, startDate, endDate) {
+      try {
+
+        // Calcola il numero di giorni tra le due date
+        const oneDay = 24 * 60 * 60 * 1000; // Milliseconds in one day
+        const numDays = Math.round(Math.abs((new Date(endDate) - new Date(startDate)) / oneDay)) + 1;
+        //console.log(numDays);
+
+        // Ottenere l'array 'row' che rappresenta le righe della tabella
+        const row = ["Somma Scari", "Somma Cari", "Somma INV", "Media Scari", "Media Cari", "Media INV", "Numero Scari", "Numero Cari", "Numero INV"]; // Esempio di array di righe
+
+        // Creare la tabella HTML
+        const table = document.createElement("table");
+
+        // Creare la riga di intestazione
+        const headerRow = document.createElement("tr");
+        headerRow.innerHTML = "<th></th><th>Utlimi 1gg</th><th>ultimi 7gg</th><th>Ultimi 30gg</th><th>Ultimi 90gg</th><th>ultimi "+ numDays + "gg</th>"; // Intestazioni delle colonne
+        table.appendChild(headerRow);
+
+        // Iterare sulle righe
+        for (const rowData of row) {
+          // Creare una nuova riga
+          const newRow = document.createElement("tr");
+
+          // Aggiungere la cella con il valore della riga
+          const rowCell = document.createElement("td");
+          rowCell.textContent = rowData;
+          newRow.appendChild(rowCell);
+
+          //console.log(rowData.split(' ')[0].toLowerCase());
+          const SommaData = (await axios.get('/apiMovimenti/getMediaSommaCausale', {
+            params: {
+              codice: codice[0].codice,
+              causale: rowData.split(' ')[1].toLowerCase(),
+              operazione: rowData.split(' ')[0].toLowerCase()
+            }
+          }))["data"];
+
+          /*const MediaData = (await axios.get('/apiMovimenti/getMediaSommaCausale', {
+            params: {
+              codice: codice[0].codice,
+              causale: rowData.split(' ')[0].toLowerCase(),
+              operazione: "media"
+            }
+          }))["data"];*/
+          //console.log(SommaData);
+
+          // Chiamare la funzione 'getInfoCodice' per ottenere il risultato per la causale corrente
+          const risultatoCausale = await getInfoCodice(codice[0].codice, rowData.split(' ')[1].toLowerCase(), rowData.split(' ')[0].toLowerCase(), startDate, endDate);
+
+          const cell1gg = document.createElement("td");
+          const cell7gg = document.createElement("td");
+          const cell30gg = document.createElement("td");
+          const cell90gg = document.createElement("td"); 
+          const cellNgg = document.createElement("td");
+
+          cell1gg.textContent = SommaData.Info1gg;
+          //console.log("1gg: ", SommaData.Info1gg);
+          newRow.appendChild(cell1gg);
+          cell7gg.textContent = SommaData.Info7gg;
+          //console.log("7gg: ", SommaData.Info7gg);
+          newRow.appendChild(cell7gg);
+          cell30gg.textContent = SommaData.Info30gg;
+          newRow.appendChild(cell30gg);
+          cell90gg.textContent = SommaData.Info90gg;
+          newRow.appendChild(cell90gg);
+          cellNgg.textContent = risultatoCausale;
+          newRow.appendChild(cellNgg);
+
+          // Aggiungere la riga alla tabella
+          table.appendChild(newRow);
+        }
+
+        // Aggiungere la tabella al documento HTML
+        const tableContainer = document.getElementById("div_info_movimenti"); // Sostituire con l'ID dell'elemento in cui si desidera inserire la tabella
+
+        // Rimuovi tutti i figli dell'elemento
+        while (tableContainer.firstChild) {
+          tableContainer.removeChild(tableContainer.firstChild);
+        }
+
+        tableContainer.appendChild(table);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+
+
+
+    //  LOGICA PULSANTI 1gg 7gg 30gg
+    function setRange(startDate, endDate) {
+      $('#startDateInput').val(startDate);
+      $('#endDateInput').val(endDate);
+    }
+
+    // Gestione del click sul pulsante "Ultimi 1 giorno"
+    $('#last1Day').click(function() {
+      const today = new Date().toISOString().split('T')[0];
+      setRange(today, today);
+    });
+
+    // Gestione del click sul pulsante "Ultimi 7 giorni"
+    $('#last7Days').click(function() {
+      const endDate = new Date().toISOString().split('T')[0];
+      const startDate = new Date();
+      startDate.setDate(startDate.getDate() - 7);
+      const startDateString = startDate.toISOString().split('T')[0];
+      setRange(startDateString, endDate);
+    });
+
+    // Gestione del click sul pulsante "Ultimi 30 giorni"
+    $('#last30Days').click(function() {
+      const endDate = new Date().toISOString().split('T')[0];
+      const startDate = new Date();
+      startDate.setDate(startDate.getDate() - 30);
+      const startDateString = startDate.toISOString().split('T')[0];
+      setRange(startDateString, endDate);
+      console.log(startDateString);
+    });
+
+  </script>
+</div>

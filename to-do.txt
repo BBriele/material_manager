@@ -1,0 +1,17 @@
+riepilogo:
+    V - grafico giacenza dato perido di tempo             
+
+    - media movimenti causale scari dato perido di tempo
+    - media movimenti causale cari dato perido di tempo
+    - media movimenti causale inv dato perido di tempo 
+
+    - somma movimenti causale scari dato perido di tempo
+    - somma movimenti causale cari dato perido di tempo
+    - somma movimenti causale inv dato perido di tempo
+
+necessari:
+    - lista materiali comuni
+        - + lista materiali necessari
+        - shortcut per carico/scarico materiali
+            - form ridotto per movimento
+    - lista materiali prossimo al minimo (giacenza_minima + media scari/giorno)

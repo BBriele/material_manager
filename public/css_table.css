@@ -1,0 +1,137 @@
+/* Font */
+@import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500');
+
+/* Colors */
+:root {
+  --md-blue: #2196F3;
+  --md-blue-light: #64B5F6;
+  --md-grey: #BDBDBD;
+  --md-grey-light: #E0E0E0;
+  --md-white: #FFFFFF;
+  --height-height: 500px;
+  /* cell width has to reserve some space for scrolling. Hence the sum < 100% */
+  --cell-width: 80px;
+}
+
+
+form {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  z-index: 9999;
+
+  padding-top: 20px;
+  padding-bottom: 20px;
+  padding-left: 20px;
+  padding-right: 20px;
+
+  width: 50%;
+
+  background-color: gray;
+  border-color: black;
+}
+
+input {
+  display: block;
+  margin-bottom: 5px;
+  width: 75%;
+  margin: auto;
+}
+
+button {
+  margin-top: 10px;
+}
+
+
+#div_table_materiali{
+  margin: 0 auto;
+  width: 90%; /* or whatever width you want */
+  max-height: 700px;
+  /*overflow-y: auto;*/
+}
+
+#div_table_movimenti{
+  margin: 0 auto;
+  width: 90%; /* or whatever width you want */
+  max-height: 700px;
+  /*overflow-y: auto;*/
+}
+
+#container_form_materiale{
+  margin: 0 auto;
+  width: 90%; /* or whatever width you want */
+  max-height: 700px;
+  /*overflow-y: auto;*/
+}
+
+#container_form_movimento{
+  margin: 0 auto;
+  width: 90%; /* or whatever width you want */
+  max-height: 700px;
+  /*overflow-y: auto;*/
+}
+
+#container_left_materiali,
+#container_right_materiali {
+    width: 50%;
+    float: left;
+    box-sizing: border-box;
+}
+
+table.dataTable{
+  font-size: x-small;
+  font-family:Arial, Helvetica, sans-serif;
+}
+
+table.dataTable td th {
+  padding: 3px 10px;
+  width: 1px;
+  
+}
+
+.column_descrizione{
+  max-width: 250px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.column_qt{
+  max-width: 40px;
+}
+.column_bt{
+  max-width: 35px;
+}
+.column_codice{
+  max-width: 45px;
+}
+
+tr td th {
+  max-height: 20px !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+th {
+  border-top: 1px solid #888888;
+  border-bottom: 1px solid #888888;
+  border-right: 1px solid #888888;
+  background-color: #586980;
+  text-align: center;
+}
+ 
+th:first-child {
+  border-left: 1px solid #888888;
+  border-bottom: 1px solid #888888;
+  text-align: center;
+}
+
+table {
+  border-bottom: 1px solid #888888;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
