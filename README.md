@@ -24,12 +24,12 @@ Hey there! This is my first foray into web development! 🚀 I built this Node.j
   Your server will be live at http://localhost:3000 🎉
 
 ## 🛠️ What’s Under the Hood?
-**Node.js**: The backbone of this project. 💪
-**Express**: The framework that makes routing and handling requests a breeze. 🌪️
+ - **Node.js**: The backbone of this project. 💪
+ - **Express**: The framework that makes routing and handling requests a breeze. 🌪️
 
 ## ⚠️ What to Know
-**Not Perfect**: This is my first real web project, so don’t expect it to follow every best practice. It’s like that VHS collection you’ve still got in your attic—charming but a bit outdated. 📼
-**Improvements**: There’s plenty of room for growth. If you’ve got suggestions or want to contribute, I’m all ears! 🐰
+ - **Not Perfect**: This is my first real web project, so don’t expect it to follow every best practice. It’s like that VHS collection you’ve still got in your attic—charming but a bit outdated. 📼
+ - **Improvements**: There’s plenty of room for growth. If you’ve got suggestions or want to contribute, I’m all ears! 🐰
 
 ## 🙌 Contributions
 Got ideas? Spotted a bug? Want to add a feature? Open an issue or submit a pull request! I’d love your help in making this project better. 🤓
