@@ -12,15 +12,15 @@ Hey there! This is my first foray into web development! 🚀 I built this Node.j
    ```
 
 2. **Install Dependencies**: Navigate to the project directory and install all the necessary packages:
-  ```bash
+   ```bash
     cd your-repo
     npm install
-  ```
+   ```
 
 3. **Run the Server**: Start the server with:
-  ```bash
-  npm start
-  ```
+   ```bash
+    npm start
+   ```
   Your server will be live at http://localhost:3000 🎉
 
 ## 🛠️ What’s Under the Hood?
