@@ -29,7 +29,7 @@ This project relies on a few key dependencies to keep everything running smoothl
 
 - **[Express](https://expressjs.com/)**: Our trusty web framework for building APIs and handling requests. It’s the backbone of our server, making routing and middleware a breeze. 🌟
 - **[DataTables](https://datatables.net/)**: This powerful jQuery plugin is used for creating dynamic and interactive tables. It helps in managing and displaying data with all the bells and whistles. 📊
-- **[MongoDB](https://www.mongodb.com/it-it)**: The database we use to store and manage our data. MongoDB’s flexible and scalable nature makes it perfect for handling the material and equipment data in this project. 🗃️
+- **[MongoDB](https://www.mongodb.com/it-it)**: Chosen for its lightweight nature and ease of use, MongoDB was perfect for our office PC with limited resources. It avoided the complexity of traditional databases like MySQL, making it a quick and efficient choice for managing our data. 🗃️
 
 These tools work together to make sure the server is functional and the data is well-managed. If you want to dig deeper into any of them, check out their documentation!
 
