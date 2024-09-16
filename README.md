@@ -23,9 +23,15 @@ Hey there! This is my first foray into web development! 🚀 I built this Node.j
    ```
   Your server will be live at http://localhost:3000 🎉
 
-## 🛠️ What’s Under the Hood?
- - **Node.js**: The backbone of this project. 💪
- - **Express**: The framework that makes routing and handling requests a breeze. 🌪️
+## 📚 Dependencies
+
+This project relies on a few key dependencies to keep everything running smoothly:
+
+- **[Express](https://expressjs.com/)**: Our trusty web framework for building APIs and handling requests. It’s the backbone of our server, making routing and middleware a breeze. 🌟
+- **[DataTables](https://datatables.net/)**: This powerful jQuery plugin is used for creating dynamic and interactive tables. It helps in managing and displaying data with all the bells and whistles. 📊
+- **[MongoDB](https://www.mongodb.com/it-it)**: The database we use to store and manage our data. MongoDB’s flexible and scalable nature makes it perfect for handling the material and equipment data in this project. 🗃️
+
+These tools work together to make sure the server is functional and the data is well-managed. If you want to dig deeper into any of them, check out their documentation!
 
 ## ⚠️ What to Know
  - **Not Perfect**: This is my first real web project, so don’t expect it to follow every best practice. It’s like that VHS collection you’ve still got in your attic—charming but a bit outdated. 📼
