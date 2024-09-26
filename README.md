@@ -1,8 +1,8 @@
-# Welcome to My Node.js & Express Webserver Project! 🎉
+# Welcome to My Node.js & Express Material Manager Project! 🎉
 
 ## 🚀 What’s This All About?
 
-Hey there! This is my first foray into web development! 🚀 I built this Node.js webserver with Express to manage materials and equipment from my old job where I was the assistant manager. It’s not perfect—think of it as a prototype from the 90s. It works, but it’s got some rough edges. 🕰️
+Hey there! This is my first foray into web development! 🚀 I built this Node.js webserver with Express to manage materials and equipment from my old job where I was the assistant manager. It’s not perfect, think of it as a prototype from the 90s. It works, but it’s got some rough edges. 🕰️
 
 ## 📦 How to Get Started
 
