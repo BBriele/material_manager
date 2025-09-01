@@ -8,12 +8,12 @@ Hey there! This is my first foray into web development! 🚀 I built this Node.j
 
 1. **Clone the Repo**: First, grab this gem of a project. Open your terminal and run:
    ```bash
-    git clone https://github.com/yourusername/your-repo.git
+    git clone https://github.com/BBriele/material_manager.git
    ```
 
 2. **Install Dependencies**: Navigate to the project directory and install all the necessary packages:
    ```bash
-    cd your-repo
+    cd material_manager
     npm install
    ```
 
